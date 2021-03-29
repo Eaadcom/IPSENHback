@@ -8,13 +8,12 @@ build:
     - master
     - develop
   script:
-    - npm install -g @angular/cli@9.1.0
-    - npm install
-    - ng build 
-  artifacts:
-    paths:
-      - dist/
-    expire_in: 2 hours
-  cache:
-    paths:
-      - node_modules/
+    - composer install
+    - 
+  # artifacts:
+  #   paths:
+  #     - dist/
+  #   expire_in: 2 hours
+  # cache:
+  #   paths:
+  #     - node_modules/
