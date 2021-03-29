@@ -9,7 +9,6 @@ build:
     - develop
   script:
     - composer install
-    - 
   # artifacts:
   #   paths:
   #     - dist/
