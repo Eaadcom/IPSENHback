@@ -9,6 +9,7 @@ build:
     - develop
   script:
     - composer install
+    - php ./vendor/phpunit/phpunit/phpunit
   # artifacts:
   #   paths:
   #     - dist/
