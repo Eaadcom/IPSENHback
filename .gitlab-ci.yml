@@ -3,7 +3,7 @@ stages:
 
 build:
   stage: build
-  image: node:latest
+  image: composer:2.0.11
   only:
     - master
   script:
