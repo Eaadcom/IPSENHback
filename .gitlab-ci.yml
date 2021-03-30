@@ -49,6 +49,23 @@ phpunit:
     expire_in: 1 days
     when: on_failure
 
+behat:
+  stage: testing
+  # services:
+  #   - name: mysql:8.0
+  #     command: ["--default-authentication-plugin=mysql_native_password"]
+  # Download the artifacts for these jobs
+  dependencies:
+    - composer
+  script:
+    - php ./vendor/bin/behat --version
+    - php ./vendor/bin/behat
+  artifacts:
+    paths:
+      - ./storage/logs # for debugging
+    expire_in: 1 days
+    when: on_failure
+
 # build:
 #   stage: build
 #   only:
