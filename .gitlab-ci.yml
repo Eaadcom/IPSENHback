@@ -10,6 +10,7 @@ build:
   script:
     - composer install
     - php ./vendor/phpunit/phpunit/phpunit
+    - php ./vendor/bin/behat
   # artifacts:
   #   paths:
   #     - dist/
