@@ -81,6 +81,9 @@ build:development-docker-image:
     - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development
   only:
     - development
+  environment:
+    name: staging
+    url: http://staging.groep-7.xyz
 
 build:production-docker-image:
   stage: build
@@ -97,3 +100,6 @@ build:production-docker-image:
     - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend
   only:
     - master
+  environment:
+    name: production
+    url: http://www.groep-7.xyz
