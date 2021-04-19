@@ -1,7 +1,7 @@
 stages:
  - preparation
  - testing
-
+ - build
 # # variables:
 # #   MYSQL_ROOT_PASSWORD: root
 # #   MYSQL_USER: mysql_user
@@ -67,7 +67,7 @@ stages:
 #     when: on_failure
 
 docker:
-  stage: building
+  stage: build
   image: docker:19.03.12
   variables:
     DOCKER_HOST: tcp://docker:2375
