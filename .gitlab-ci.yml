@@ -76,7 +76,7 @@ docker:
     - docker:19.03.12-dind
   script:
     - echo ls
-    # - docker login -u gitlab+deploy-token-1 -p LBePBpNrf42vzB8kdTQn gitlab.groep-7.xyz:5000
+    - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5000
     # - docker build -t ipsenh-groep7-frontend .
     # - docker push ipsenh-groep7-frontend
     
