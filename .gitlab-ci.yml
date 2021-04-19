@@ -74,7 +74,7 @@ docker:
     DOCKER_TLS_CERTDIR: ""
   services:
     - name: docker:19.03.0-dind
-      command: ["--insecure-registry=My_IP:4567"]
+      command: ["--insecure-registry","gitlab.groep-7.xyz:5000"]
   script:
     - echo ls
     - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5000
