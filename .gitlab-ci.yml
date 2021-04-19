@@ -1,7 +1,7 @@
 stages:
- - preparation
- - testing
- - build
+  - preparation
+  - testing
+  - build
 # variables:
 #   MYSQL_ROOT_PASSWORD: root
 #   MYSQL_USER: mysql_user
@@ -66,7 +66,23 @@ behat:
     expire_in: 1 days
     when: on_failure
 
-docker:
+build:development-docker-image:
+  stage: build
+  image: docker:19.03.12
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - name: docker:19.03.0-dind
+      command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
+  script:
+    - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
+    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development .
+    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development
+  only:
+    - development
+
+build:production-docker-image:
   stage: build
   image: docker:19.03.12
   variables:
@@ -79,26 +95,5 @@ docker:
     - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
     - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend .
     - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend
-    
-# build:
-#   stage: build
-#   only:
-#     - master
-#     - develop
-#   script:
-#     - composer install
-#     - php ./vendor/phpunit/phpunit/phpunit
-#     - php ./vendor/bin/behat
-#   artifacts:
-#     paths:
-#       - vendor/
-#     expire_in: 1 days
-#     when: always
-#   cache:
-#     paths:
-#       - vendor/
-
-# test:
-#   stage: test
-
-
+  only:
+    - master
