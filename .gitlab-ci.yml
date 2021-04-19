@@ -78,7 +78,7 @@ docker:
   script:
     - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5000
     - docker build -t gitlab.groep-7.xyz:5000/joep/ipsenh-backend/test:test .
-    - docker push gitlab.groep-7.xyz"5000/joep/ipsenh-backend/test:test
+    - docker push gitlab.groep-7.xyz:5000/joep/ipsenh-backend/test:test
     
 # build:
 #   stage: build
