@@ -105,7 +105,7 @@ build:production-docker-image:
     name: production
     url: http://www.groep-7.xyz
 
-deploy:
+deploy:staging:
   stage: deploy
   image: alpine
   before_script:
@@ -119,6 +119,30 @@ deploy:
   script:
     - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
       -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development -e staging"
+  only:
+    - master
+    - development
+  environment:
+    name: staging
+    url: http://staging.groep-7.xyz
 
-
-
+deploy:production:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  script:
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend -e production"
+  only:
+    - master
+    - development
+  environment:
+    name: production
+    url: http://production.groep-7.xyz
