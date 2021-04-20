@@ -79,7 +79,7 @@ build:development-docker-image:
   script:
     - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
     - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend:development .
-    - docker push $CONTAINER_REGISTRY /joep/ipsenh-backend:development
+    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend:development
 
 build:production-docker-image:
   stage: build
