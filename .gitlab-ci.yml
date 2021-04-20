@@ -109,5 +109,5 @@ deploy:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD -r
-      $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ ipsenh-backend:development -e staging"
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development -e staging"
