@@ -75,11 +75,11 @@ build:development-docker-image:
     DOCKER_TLS_CERTDIR: ""
   services:
     - name: docker:19.03.0-dind
-      command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
+      command: ["--insecure-registry",$CONTAINER_REGISTRY]
   script:
-    - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
-    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development .
-    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development
+    - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend:development .
+    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend:development
   only:
     - development
 
@@ -91,11 +91,11 @@ build:production-docker-image:
     DOCKER_TLS_CERTDIR: ""
   services:
     - name: docker:19.03.0-dind
-      command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
+      command: ["--insecure-registry",$CONTAINER_REGISTRY]
   script:
-    - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
-    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend .
-    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend
+    - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend .
+    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend
   only:
     - master
 
