@@ -94,19 +94,16 @@ build:production-docker-image:
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
     - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
-    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend:master .
-    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:master
+    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend .
+    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend
   only:
     - master
 
 deploy:
   stage: deploy
-  image: alpine
-  before_script:
-    - apk add openssh-client
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
+  image: junte/ssh-agent
+  variables:
+    # should be set up at Gitlab CI env vars
+    SSH_PRIVATE_KEY: $SSH_DEV_PRIVATE_KEY
   script:
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "cd ~; ls -l"
+    - ssh deployer@groep-7.xyz "cd ~ && ls -l"
