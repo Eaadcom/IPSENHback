@@ -120,7 +120,6 @@ deploy:staging:
     - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
       -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development -e staging"
   only:
-    - master
     - development
   environment:
     name: staging
@@ -142,7 +141,6 @@ deploy:production:
       -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend -e production"
   only:
     - master
-    - development
   environment:
     name: production
     url: http://production.groep-7.xyz
