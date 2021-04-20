@@ -108,7 +108,6 @@ deploy:
     - chmod 644 ~/.ssh/known_hosts
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    # login to docker
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY"
   script:
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "cd ~/production; docker-compose pull --ignore-pull-failures"
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD -r
+      $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ ipsenh-backend:development -e staging"
