@@ -101,9 +101,14 @@ build:production-docker-image:
 
 deploy:
   stage: deploy
-  image: junte/ssh-agent
-  variables:
-    # should be set up at Gitlab CI env vars
-    SSH_PRIVATE_KEY: $SSH_DEV_PRIVATE_KEY
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | DISPLAY=":0.0" setsid ssh-add - > /dev/null
   script:
-    - ssh deployer@groep-7.xyz "cd ~ && ls -l"
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "cd ~; ls -l"
