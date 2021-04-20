@@ -93,7 +93,7 @@ build:production-docker-image:
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
     - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
-    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend .
-    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend
+    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend:master .
+    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:master
   only:
     - master
