@@ -80,6 +80,11 @@ build:development-docker-image:
     - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
     - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend:development .
     - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend:development
+  only:
+    - development
+  environment:
+    name: staging
+    url: http://staging.groep-7.xyz
 
 build:production-docker-image:
   stage: build
@@ -96,6 +101,9 @@ build:production-docker-image:
     - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend
   only:
     - master
+  environment:
+    name: production
+    url: http://www.groep-7.xyz
 
 deploy:
   stage: deploy
@@ -111,3 +119,6 @@ deploy:
   script:
     - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
       -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development -e staging"
+
+
+
