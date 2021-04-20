@@ -2,6 +2,7 @@ stages:
   - preparation
   - testing
   - build
+  - deploy
 # variables:
 #   MYSQL_ROOT_PASSWORD: root
 #   MYSQL_USER: mysql_user
@@ -97,3 +98,14 @@ build:production-docker-image:
     - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend
   only:
     - master
+
+deploy:
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "cd ~; ls -l"
