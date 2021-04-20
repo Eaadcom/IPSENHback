@@ -100,6 +100,7 @@ build:production-docker-image:
     - master
 
 deploy:
+  stage: deploy
   image: alpine
   before_script:
     - apk add openssh-client
