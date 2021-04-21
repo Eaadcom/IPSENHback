@@ -80,7 +80,6 @@ publish:docker-production:
     - master
   environment:
     name: production
-    url: http://www.groep-7.xyz
 
 deploy:staging:
   stage: deploying
@@ -100,27 +99,30 @@ deploy:staging:
       -r $CONTAINER_REGISTRY
       -i $STAGING_IMAGE_TAG:latest
       -e staging -s staging_lumen"
+  only:
+    - staging
+    environment:
+      name: staging
 
-#deploy:production:
-#  stage: deploying
-#  image: alpine
-#  before_script:
-#    - apk add openssh-client
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-#    - chmod 644 ~/.ssh/known_hosts
-#    - eval $(ssh-agent -s)
-#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-#  script:
-#    - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
-#      -u $PROJECT_TOKEN_USERNAME
-#      -p $PROJECT_TOKEN_PASSWORD
-#      -r $CONTAINER_REGISTRY
-#      -i $PRODUCTION_IMAGE_TAG:latest
-#      -e production -s production_lumen"
-#  only:
-#    - master
-#  environment:
-#    name: production
-#    url: http://production.groep-7.xyz
+deploy:production:
+  stage: deploying
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  script:
+    - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
+      -u $PROJECT_TOKEN_USERNAME
+      -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY
+      -i $PRODUCTION_IMAGE_TAG:latest
+      -e production -s production_lumen"
+  only:
+    - master
+  environment:
+    name: production
