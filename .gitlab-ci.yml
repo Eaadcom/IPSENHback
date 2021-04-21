@@ -2,6 +2,7 @@ stages:
   - preparation
   - testing
   - build
+  - deploy
 # variables:
 #   MYSQL_ROOT_PASSWORD: root
 #   MYSQL_USER: mysql_user
@@ -55,11 +56,14 @@ build:development-docker-image:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
-    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development .
-    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:development
+    - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend:development .
+    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend:development
   only:
     - development
+  environment:
+    name: staging
+    url: http://staging.groep-7.xyz
 
 build:production-docker-image:
   stage: build
@@ -71,8 +75,51 @@ build:production-docker-image:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker login -u gitlab+deploy-token-2 -p ayXzgFLwy_jAQvYX9-w7 gitlab.groep-7.xyz:5050
-    - docker build -t gitlab.groep-7.xyz:5050/joep/ipsenh-backend:master .
-    - docker push gitlab.groep-7.xyz:5050/joep/ipsenh-backend:master
+    - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend .
+    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend
   only:
     - master
+  environment:
+    name: production
+    url: http://www.groep-7.xyz
+
+deploy:staging:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  script:
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development -e staging"
+  only:
+    - development
+  environment:
+    name: staging
+    url: http://staging.groep-7.xyz
+
+deploy:production:
+  stage: deploy
+  image: alpine
+  before_script:
+    - apk add openssh-client
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  script:
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend -e production"
+  only:
+    - master
+  environment:
+    name: production
+    url: http://production.groep-7.xyz
