@@ -11,9 +11,6 @@ stages:
 # https://github.com/ohdearapp/gitlab-ci-pipeline-for-laravel/blob/master/.gitlab-ci.yml
 image: composer:2.0.11
 
-cache:
-  key: "$CI_JOB_NAME-$CI_COMMIT_REF_SLUG"
-
 composer:
   stage: preparation
   script:
@@ -25,15 +22,8 @@ composer:
     expire_in: 1 days
     when: always
 
-
 phpunit:
   stage: testing
-  # services:
-  #   - name: mysql:8.0
-  #     command: ["--default-authentication-plugin=mysql_native_password"]
-  # Download the artifacts for these jobs
-  dependencies:
-    - composer
   script:
     - php -v
     - php ./vendor/phpunit/phpunit/phpunit --version
@@ -46,12 +36,6 @@ phpunit:
 
 behat:
   stage: testing
-  # services:
-  #   - name: mysql:8.0
-  #     command: ["--default-authentication-plugin=mysql_native_password"]
-  # Download the artifacts for these jobs
-  dependencies:
-    - composer
   script:
     - php ./vendor/bin/behat --version
     - php ./vendor/bin/behat
