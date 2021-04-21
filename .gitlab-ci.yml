@@ -21,9 +21,9 @@ composer:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
   artifacts:
     paths:
-      - ./
+      - ./*
     exclude:
-      - ./vendor
+      - ./vendor/*
     expire_in: 1 days
     when: always
 
