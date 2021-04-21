@@ -59,6 +59,8 @@ publish:docker-staging:
     - docker build -t $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $STAGING_IMAGE_TAG:latest .
     - docker push $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
     - docker push $STAGING_IMAGE_TAG:latest
+  only:
+    - development
   environment:
     name: staging
 
