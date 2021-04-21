@@ -11,6 +11,6 @@ RUN apt-get update && \
     service apache2 restart
 
 COPY --from=builder ./app/* .
-RUN cp .env.example .env && php artisan key:gen
+RUN cp .env.docker .env && php artisan key:gen
 
 EXPOSE 80

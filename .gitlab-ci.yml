@@ -19,17 +19,14 @@ composer:
   script:
     - php -v
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
-    - cp .env.example .env
-    - php artisan key:generate
   artifacts:
     paths:
-      - vendor/
-      - .env
+      - ./
+    exclude:
+      - ./vendor
     expire_in: 1 days
     when: always
-  cache:
-    paths:
-      - vendor/
+
 
 phpunit:
   stage: testing
