@@ -103,11 +103,7 @@ deploy:staging:
       -r $CONTAINER_REGISTRY
       -i $TAG_STAGING:latest
       -e staging -s staging_lumen"
-  only:
-    - development
-  environment:
-    name: staging
-    url: http://staging.groep-7.xyz
+
 
 #deploy:production:
 #  stage: deploying
