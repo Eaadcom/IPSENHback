@@ -121,6 +121,11 @@ deploy:staging:
                                          -p $PROJECT_TOKEN_PASSWORD -r $CONTAINER_REGISTRY
                                          -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development
                                          -e staging -s staging_lumen"
+  only:
+    - development
+  environment:
+    name: staging
+    url: http://staging.groep-7.xyz
 
 deploy:production:
   stage: deploy
