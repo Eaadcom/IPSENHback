@@ -22,8 +22,6 @@ composer:
   artifacts:
     paths:
       - ./*
-    exclude:
-      - ./vendor/*
     expire_in: 1 days
     when: always
 
