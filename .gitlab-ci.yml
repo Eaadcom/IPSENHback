@@ -1,32 +1,25 @@
-stages:
-  - preparation
-  - testing
-  - build
-  - deploy
-# variables:
-#   MYSQL_ROOT_PASSWORD: root
-#   MYSQL_USER: mysql_user
-#   MYSQL_PASSWORD: mysql_password
-#   MYSQL_DATABASE: mysql_db
-#   DB_HOST: mysql
-# https://github.com/ohdearapp/gitlab-ci-pipeline-for-laravel/blob/master/.gitlab-ci.yml
 image: composer:2.0.11
+stages:
+  - building
+  - testing
+  - publishing
+  - deploying
 
-composer:
-  stage: preparation
+build:app:
+  stage: building
   script:
     - php -v
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
   artifacts:
     paths:
-      - ./*
+      - vendor/
+      - .env
     expire_in: 1 days
     when: always
 
-phpunit:
+test:phpunit:
   stage: testing
   script:
-    - php -v
     - php ./vendor/phpunit/phpunit/phpunit --version
     - php ./vendor/phpunit/phpunit/phpunit
   artifacts:
@@ -34,8 +27,11 @@ phpunit:
       - ./storage/logs # for debugging
     expire_in: 1 days
     when: on_failure
+  except:
+    - development
+    - master
 
-behat:
+test:behat:
   stage: testing
   script:
     - php ./vendor/bin/behat --version
@@ -45,9 +41,12 @@ behat:
       - ./storage/logs # for debugging
     expire_in: 1 days
     when: on_failure
+  except:
+    - development
+    - master
 
-build:development-docker-image:
-  stage: build
+publish:docker-staging:
+  stage: publishing
   image: docker:19.03.12
   variables:
     DOCKER_HOST: tcp://docker:2375
@@ -57,16 +56,16 @@ build:development-docker-image:
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
     - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
-    - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend:development .
-    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend:development
+    - docker build -t $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $STAGING_IMAGE_TAG:latest .
+    - docker push $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - docker push $STAGING_IMAGE_TAG:latest
   only:
     - development
   environment:
     name: staging
-    url: http://staging.groep-7.xyz
 
-build:production-docker-image:
-  stage: build
+publish:docker-production:
+  stage: publishing
   image: docker:19.03.12
   variables:
     DOCKER_HOST: tcp://docker:2375
@@ -76,16 +75,16 @@ build:production-docker-image:
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
     - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
-    - docker build -t $CONTAINER_REGISTRY/joep/ipsenh-backend .
-    - docker push $CONTAINER_REGISTRY/joep/ipsenh-backend
+    - docker build -t $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $PRODUCTION_IMAGE_TAG:latest .
+    - docker push $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+    - docker push $PRODUCTION_IMAGE_TAG:latest
   only:
     - master
   environment:
     name: production
-    url: http://www.groep-7.xyz
 
 deploy:staging:
-  stage: deploy
+  stage: deploying
   image: alpine
   before_script:
     - apk add openssh-client
@@ -96,18 +95,19 @@ deploy:staging:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz  "/bin/bash deploy_app.sh -u $PROJECT_TOKEN_USERNAME
-                                         -p $PROJECT_TOKEN_PASSWORD -r $CONTAINER_REGISTRY
-                                         -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development
-                                         -e staging -s staging_lumen"
+    - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
+      -u $PROJECT_TOKEN_USERNAME
+      -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY
+      -i $STAGING_IMAGE_TAG:latest
+      -e staging -s staging_lumen"
   only:
-    - development
+    - staging
   environment:
     name: staging
-    url: http://staging.groep-7.xyz
 
 deploy:production:
-  stage: deploy
+  stage: deploying
   image: alpine
   before_script:
     - apk add openssh-client
@@ -118,10 +118,13 @@ deploy:production:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
-      -r $CONTAINER_REGISTRY -i _ -e production"
+    - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
+      -u $PROJECT_TOKEN_USERNAME
+      -p $PROJECT_TOKEN_PASSWORD
+      -r $CONTAINER_REGISTRY
+      -i $PRODUCTION_IMAGE_TAG:latest
+      -e production -s production_lumen"
   only:
     - master
   environment:
     name: production
-    url: http://production.groep-7.xyz
