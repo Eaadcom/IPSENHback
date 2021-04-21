@@ -101,8 +101,8 @@ deploy:staging:
       -e staging -s staging_lumen"
   only:
     - staging
-    environment:
-      name: staging
+  environment:
+    name: staging
 
 deploy:production:
   stage: deploying
