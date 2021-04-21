@@ -117,13 +117,12 @@ deploy:staging:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
-    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz "bash deploy_backend_prod.sh -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD
-      -r $CONTAINER_REGISTRY -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development -e staging"
-  only:
-    - development
-  environment:
-    name: staging
-    url: http://staging.groep-7.xyz
+    - ssh -o StrictHostKeyChecking=no deployer@groep-7.xyz \
+              "/bin/bash deploy_lumen.sh -u $PROJECT_TOKEN_USERNAME \
+                                         -p $PROJECT_TOKEN_PASSWORD \
+                                         -r $CONTAINER_REGISTRY \
+                                         -i $CONTAINER_REGISTRY/joep/ipsenh-backend:development \
+                                         -e staging -s staging_lumen"
 
 deploy:production:
   stage: deploy
