@@ -20,7 +20,6 @@ build:app:
 test:phpunit:
   stage: testing
   script:
-    - php -v
     - php ./vendor/phpunit/phpunit/phpunit --version
     - php ./vendor/phpunit/phpunit/phpunit
   artifacts:
@@ -56,7 +55,6 @@ publish:docker-staging:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker version
     - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
     - docker build -t $TAG_STAGING:$CI_COMMIT_SHORT_SHA -t $TAG_STAGING:latest .
     - docker push $TAG_STAGING:$CI_COMMIT_SHORT_SHA
@@ -74,7 +72,6 @@ publish:docker-production:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker version
     - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
     - docker build -t $TAG_PRODUCTION:$CI_COMMIT_SHORT_SHA -t $TAG_PRODUCTION:latest .
     - docker push $TAG_PRODUCTION:$CI_COMMIT_SHORT_SHA
