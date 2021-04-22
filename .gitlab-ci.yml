@@ -114,7 +114,7 @@ deploy:staging:
       -i $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
       -e staging -s staging_lumen"
   only:
-    - staging
+    - development
   environment:
     name: staging
 
@@ -145,7 +145,7 @@ archive:
   image: alpine:latest
   stage: archiving
   script:
-    - cp -p . ./archive && cd ./archive && rm -rf ./vendor
+    - cp -p ./* ./archive && cd ./archive && rm -rf ./vendor
   artifacts:
     paths:
       - ./archive/*
