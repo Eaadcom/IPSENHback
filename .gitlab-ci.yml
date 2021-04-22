@@ -1,3 +1,4 @@
+image: composer:2.0.11
 stages:
   - preparation
   - testing
@@ -9,15 +10,13 @@ stages:
 cache:
     key: vendor_cache
     paths:
-        - vendor/
+      - vendor/
     policy: pull
 
 composer:
-  image: php:8
   stage: preparation
   script:
-    - curl --show-error --silent "https://getcomposer.org/installer" | php
-    - php composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
   cache:
     policy: push
 
