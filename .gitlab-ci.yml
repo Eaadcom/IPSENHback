@@ -24,8 +24,7 @@ test:phpunit:
   image: php:8
   stage: testing
   script:
-    - curl --show-error --silent "https://getcomposer.org/installer" | php
-    - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
+    - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
       - ./storage/logs # for debugging
@@ -33,6 +32,7 @@ test:phpunit:
     when: on_failure
 
 test:behat:
+  image: php:8
   stage: testing
   script:
     - php ./vendor/bin/behat
