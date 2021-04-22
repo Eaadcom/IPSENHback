@@ -61,9 +61,9 @@ sonarqube-check:
   script: 
     - sonar-scanner
   allow_failure: true
-  only:
-    - development
-    - master
+  # only:
+  #   - development
+  #   - master
 
 publish:docker-staging:
   stage: publishing
