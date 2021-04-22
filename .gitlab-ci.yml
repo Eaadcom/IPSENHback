@@ -21,8 +21,10 @@ composer:
     policy: push
 
 test:phpunit:
+  image: php:8
   stage: testing
   script:
+    - curl --show-error --silent "https://getcomposer.org/installer" | php
     - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
@@ -109,7 +111,7 @@ deploy:staging:
       -u $CI_REGISTRY_USER
       -p $CI_REGISTRY_PASSWORD
       -r $CI_REGISTRY
-      -i $STAGING_IMAGE_TAG:latest
+      -i $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
       -e staging -s staging_lumen"
   only:
     - staging
@@ -132,7 +134,7 @@ deploy:production:
       -u $CI_REGISTRY_USER
       -p $CI_REGISTRY_PASSWORD
       -r $CI_REGISTRY
-      -i $PRODUCTION_IMAGE_TAG:latest
+      -i $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
       -e production -s production_lumen"
   only:
     - master
