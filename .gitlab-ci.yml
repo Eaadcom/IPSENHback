@@ -55,14 +55,12 @@ publish:docker-staging:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - docker build -t $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $STAGING_IMAGE_TAG:latest .
     - docker push $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
     - docker push $STAGING_IMAGE_TAG:latest
   only:
     - development
-  environment:
-    name: staging
 
 publish:docker-production:
   stage: publishing
@@ -74,14 +72,12 @@ publish:docker-production:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker login -u $PROJECT_TOKEN_USERNAME --password-stdin $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
     - docker build -t $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $PRODUCTION_IMAGE_TAG:latest .
     - docker push $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
     - docker push $PRODUCTION_IMAGE_TAG:latest
   only:
     - master
-  environment:
-    name: production
 
 deploy:staging:
   stage: deploying
@@ -96,9 +92,9 @@ deploy:staging:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
     - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
-      -u $PROJECT_TOKEN_USERNAME
-      -p $PROJECT_TOKEN_PASSWORD
-      -r $CONTAINER_REGISTRY
+      -u $CI_REGISTRY_USER
+      -p $CI_REGISTRY_PASSWORD
+      -r $CI_REGISTRY
       -i $STAGING_IMAGE_TAG:latest
       -e staging -s staging_lumen"
   only:
@@ -119,9 +115,9 @@ deploy:production:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
   script:
     - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
-      -u $PROJECT_TOKEN_USERNAME
-      -p $PROJECT_TOKEN_PASSWORD
-      -r $CONTAINER_REGISTRY
+      -u $CI_REGISTRY_USER
+      -p $CI_REGISTRY_PASSWORD
+      -r $CI_REGISTRY
       -i $PRODUCTION_IMAGE_TAG:latest
       -e production -s production_lumen"
   only:
