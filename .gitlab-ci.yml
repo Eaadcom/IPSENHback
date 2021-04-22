@@ -17,7 +17,7 @@ composer:
   stage: preparation
   script:
     - curl --show-error --silent "https://getcomposer.org/installer" | php
-    - php composer.phar install --prefer-dist --no-interaction --no-progress --no-scripts
+    - php composer install --prefer-dist --no-interaction --no-progress --no-scripts
   cache:
     policy: push
 
