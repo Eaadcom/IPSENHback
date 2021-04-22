@@ -24,6 +24,8 @@ test:phpunit:
   image: php:8
   stage: testing
   script:
+    - ls -l
+    - sleep 300
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
