@@ -1,49 +1,41 @@
-image: composer:2.0.11
 stages:
-  - building
+  - preparation
   - testing
   - publishing
   - deploying
 
-build:app:
-  stage: building
-  script:
-    - php -v
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
-  artifacts:
+cache:
+    key: vendor_cache
     paths:
-      - vendor/
-      - .env
-    expire_in: 1 days
-    when: always
+        - vendor/
+    policy: pull-push
+
+composer:
+  image: php:8
+  stage: preparation
+  script:
+    - curl --show-error --silent "https://getcomposer.org/installer" | php
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
 
 test:phpunit:
   stage: testing
   script:
-    - php ./vendor/phpunit/phpunit/phpunit --version
-    - php ./vendor/phpunit/phpunit/phpunit
+    - vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
       - ./storage/logs # for debugging
     expire_in: 1 days
     when: on_failure
-  except:
-    - development
-    - master
 
 test:behat:
   stage: testing
   script:
-    - php ./vendor/bin/behat --version
     - php ./vendor/bin/behat
   artifacts:
     paths:
       - ./storage/logs # for debugging
     expire_in: 1 days
     when: on_failure
-  except:
-    - development
-    - master
 
 publish:docker-staging:
   stage: publishing
