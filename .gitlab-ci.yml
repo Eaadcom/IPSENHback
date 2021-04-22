@@ -24,9 +24,6 @@ test:phpunit:
   image: php:8
   stage: testing
   script:
-    - pwd
-    - ls -l
-    - sleep 300
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
@@ -37,10 +34,8 @@ test:phpunit:
 test:behat:
   image: php:8
   stage: testing
+  needs: ["test:phpunit"]
   script:
-    - pwd
-    - ls -l
-    - sleep 300
     - php ./vendor/bin/behat
   artifacts:
     paths:
