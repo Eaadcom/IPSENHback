@@ -4,6 +4,7 @@ stages:
   - sonarqube
   - publishing
   - deploying
+  - archiving
 
 cache:
     key: vendor_cache
@@ -140,3 +141,15 @@ deploy:production:
     - master
   environment:
     name: production
+
+archive:
+  image: alpine:latest
+  stage: archiving
+  script:
+    - cp -p . ./archive && cd ./archive && rm -rf ./vendor
+  artifacts:
+    paths:
+      - ./archive/*
+  only:
+    - master
+    - development
