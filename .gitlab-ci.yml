@@ -74,7 +74,7 @@ publish:docker-production:
     - name: docker:19.03.0-dind
       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
   script:
-    - docker login -u $PROJECT_TOKEN_USERNAME -p $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
+    - docker login -u $PROJECT_TOKEN_USERNAME --password-stdin $PROJECT_TOKEN_PASSWORD $CONTAINER_REGISTRY
     - docker build -t $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $PRODUCTION_IMAGE_TAG:latest .
     - docker push $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
     - docker push $PRODUCTION_IMAGE_TAG:latest
