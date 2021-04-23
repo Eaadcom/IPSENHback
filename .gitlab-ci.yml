@@ -7,17 +7,23 @@ stages:
   - deploying
   - archiving
 
-cache:
+
+cache: &global_cache
   key: vendor-cache
-  path:
-    - ./vendor
+  untracked: true
+  paths:
+    - vendor/
+  policy: pull
+
 
 composer:
   stage: preparation
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
   cache:
-    policy: push
+    <<: *global_cache
+    policy: pull-push
+
 
 test:phpunit:
   image: php:8
