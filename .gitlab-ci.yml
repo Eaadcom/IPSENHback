@@ -7,16 +7,17 @@ stages:
   - deploying
   - archiving
 
+cache:
+  key: vendor-cache
+  path:
+    - ./vendor
+
 composer:
   stage: preparation
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
   cache:
     policy: push
-  artifacts:
-    paths:
-      - ./vendor
-    expire_in: 10 min
 
 test:phpunit:
   image: php:8
@@ -129,14 +130,3 @@ deploy:production:
   environment:
     name: production
 
-archive:
-  image: alpine:latest
-  stage: archiving
-  script:
-    - cp -p ./* ./archive && cd ./archive && rm -rf ./vendor
-  artifacts:
-    paths:
-      - ./archive/*
-  only:
-    - master
-    - development
