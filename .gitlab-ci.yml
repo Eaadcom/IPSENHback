@@ -1,40 +1,23 @@
 image: composer:2.0.11
 stages:
-  - preparation
   - testing
   - sonarqube
   - publishing
   - deploying
   - archiving
 
-
-cache: &global_cache
-  key: vendor-cache
-  untracked: true
-  paths:
-    - vendor/
-  policy: pull
-
-
-composer:
-  stage: preparation
-  script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
-  cache:
-    <<: *global_cache
-    policy: pull-push
-
-
 test:phpunit:
   image: php:8
   stage: testing
   script:
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
 
 test:behat:
   image: php:8
   stage: testing
   script:
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
     - php ./vendor/bin/behat
 
 sonarqube-check:
