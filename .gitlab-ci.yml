@@ -37,6 +37,19 @@ sonarqube-check:
     - development
     - master
 
+archive:app:
+  image: alpine
+  stage: archiving
+  script:
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - cat $ACSII_ART_ARCHIVING
+  artifacts:
+    paths:
+      - ./
+  only:
+    - master
+    - development
+
 publish:docker-staging:
   stage: publishing
   image: docker:19.03.12
@@ -118,15 +131,3 @@ deploy:production:
     - master
   environment:
     name: production
-
-archive:app:
-  image: alpine
-  stage: archiving
-  script:
-    - cat $ACSII_ART_ARCHIVING
-  artifacts:
-    paths:
-      - ./
-  only:
-    - master
-    - development
