@@ -6,116 +6,127 @@ stages:
   - deploying
   - archiving
 
-test:phpunit:
-  stage: testing
-  script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
-    - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
+# test:phpunit:
+#   stage: testing
+#   script:
+#     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+#     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
 
-test:behat:
-  stage: testing
-  script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
-    - php ./vendor/bin/behat
+# test:behat:
+#   stage: testing
+#   script:
+#     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+#     - php ./vendor/bin/behat
 
-sonarqube-check:
-  stage: sonarqube
-  image:
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-    GIT_DEPTH: "0"
-  cache:
-    key: "${CI_JOB_NAME}"
+# sonarqube-check:
+#   stage: sonarqube
+#   image:
+#     name: sonarsource/sonar-scanner-cli:latest
+#     entrypoint: [""]
+#   variables:
+#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+#     GIT_DEPTH: "0"
+#   cache:
+#     key: "${CI_JOB_NAME}"
+#     paths:
+#       - .sonar/cache
+#   script:
+#     - sonar-scanner
+#   allow_failure: true
+#   only:
+#     - development
+#     - master
+
+# publish:docker-staging:
+#   stage: publishing
+#   image: docker:19.03.12
+#   variables:
+#     DOCKER_HOST: tcp://docker:2375
+#     DOCKER_TLS_CERTDIR: ""
+#   services:
+#     - name: docker:19.03.0-dind
+#       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
+#   script:
+#     - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+#     - cp $STAGING_ENV .env
+#     - docker build -t $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $STAGING_IMAGE_TAG:latest .
+#     - docker push $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+#     - docker push $STAGING_IMAGE_TAG:latest
+#   only:
+#     - development
+
+# publish:docker-production:
+#   stage: publishing
+#   image: docker:19.03.12
+#   variables:
+#     DOCKER_HOST: tcp://docker:2375
+#     DOCKER_TLS_CERTDIR: ""
+#   services:
+#     - name: docker:19.03.0-dind
+#       command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
+#   script:
+#     - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+#     - cp $PRODUCTION_ENV .env
+#     - docker build -t $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $PRODUCTION_IMAGE_TAG:latest .
+#     - docker push $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+#     - docker push $PRODUCTION_IMAGE_TAG:latest
+#   only:
+#     - master
+
+# deploy:staging:
+#   stage: deploying
+#   image: alpine
+#   before_script:
+#     - apk add openssh-client
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+#     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+#     - eval $(ssh-agent -s)
+#     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#   script:
+#     - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
+#       -u $CI_REGISTRY_USER
+#       -p $CI_REGISTRY_PASSWORD
+#       -r $CI_REGISTRY
+#       -i $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+#       -e staging -s staging_lumen"
+#   only:
+#     - development
+#   environment:
+#     name: staging
+
+# deploy:production:
+#   stage: deploying
+#   image: alpine
+#   before_script:
+#     - apk add openssh-client
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+#     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+#     - eval $(ssh-agent -s)
+#     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#   script:
+#     - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
+#       -u $CI_REGISTRY_USER
+#       -p $CI_REGISTRY_PASSWORD
+#       -r $CI_REGISTRY
+#       -i $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
+#       -e production -s production_lumen"
+#   only:
+#     - master
+#   environment:
+#     name: production
+
+archive:app:
+  image: alpine
+  stage: archiving
+  script:
+    - cp -p ./* ./archive
+  artifacts:
     paths:
-      - .sonar/cache
-  script:
-    - sonar-scanner
-  allow_failure: true
-  only:
-    - development
-    - master
-
-publish:docker-staging:
-  stage: publishing
-  image: docker:19.03.12
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-  services:
-    - name: docker:19.03.0-dind
-      command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
-  script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - cp $STAGING_ENV .env
-    - docker build -t $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $STAGING_IMAGE_TAG:latest .
-    - docker push $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
-    - docker push $STAGING_IMAGE_TAG:latest
-  only:
-    - development
-
-publish:docker-production:
-  stage: publishing
-  image: docker:19.03.12
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-  services:
-    - name: docker:19.03.0-dind
-      command: ["--insecure-registry","gitlab.groep-7.xyz:5050"]
-  script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
-    - cp $PRODUCTION_ENV .env
-    - docker build -t $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA -t $PRODUCTION_IMAGE_TAG:latest .
-    - docker push $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
-    - docker push $PRODUCTION_IMAGE_TAG:latest
+      - archive/
   only:
     - master
-
-deploy:staging:
-  stage: deploying
-  image: alpine
-  before_script:
-    - apk add openssh-client
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  script:
-    - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
-      -u $CI_REGISTRY_USER
-      -p $CI_REGISTRY_PASSWORD
-      -r $CI_REGISTRY
-      -i $STAGING_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
-      -e staging -s staging_lumen"
-  only:
     - development
-  environment:
-    name: staging
-
-deploy:production:
-  stage: deploying
-  image: alpine
-  before_script:
-    - apk add openssh-client
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-  script:
-    - ssh -o StrictHostKeychecking=no $SERVER_USER@$SERVER_IP "bash $DEPLOY_SCRIPT
-      -u $CI_REGISTRY_USER
-      -p $CI_REGISTRY_PASSWORD
-      -r $CI_REGISTRY
-      -i $PRODUCTION_IMAGE_TAG:$CI_COMMIT_SHORT_SHA
-      -e production -s production_lumen"
-  only:
-    - master
-  environment:
-    name: production
-
