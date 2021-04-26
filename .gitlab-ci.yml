@@ -122,11 +122,9 @@ stages:
 archive:app:
   image: alpine
   stage: archiving
-  script:
-    - mkdir archive && sleep 300
   artifacts:
     paths:
-      - archive/
+      - ./
   only:
     - master
     - development
