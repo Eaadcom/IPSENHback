@@ -2,9 +2,9 @@ image: composer:2.0.11
 stages:
   - testing
   - sonarqube
+  - archiving
   - publishing
   - deploying
-  - archiving
 
 test:phpunit:
   stage: testing
@@ -36,6 +36,18 @@ sonarqube-check:
   only:
     - development
     - master
+
+archive:app:
+  stage: archiving
+  script:
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - cat $ACSII_ART_ARCHIVING
+  artifacts:
+    paths:
+      - ./
+  only:
+    - master
+    - development
 
 publish:docker-staging:
   stage: publishing
@@ -118,15 +130,3 @@ deploy:production:
     - master
   environment:
     name: production
-
-archive:app:
-  image: alpine
-  stage: archiving
-  script:
-    - cat $ACSII_ART_ARCHIVING
-  artifacts:
-    paths:
-      - ./
-  only:
-    - master
-    - development
