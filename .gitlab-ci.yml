@@ -7,14 +7,12 @@ stages:
   - archiving
 
 test:phpunit:
-  image: php:8
   stage: testing
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
 
 test:behat:
-  image: php:8
   stage: testing
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
