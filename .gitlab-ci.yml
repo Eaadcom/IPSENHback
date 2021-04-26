@@ -122,6 +122,8 @@ stages:
 archive:app:
   image: alpine
   stage: archiving
+  script:
+    - echo $ACSII_ART_ARCHIVING
   artifacts:
     paths:
       - ./
