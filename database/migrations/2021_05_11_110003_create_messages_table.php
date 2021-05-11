@@ -18,7 +18,6 @@ class CreateMessagesTable extends Migration
             $table->foreignId('match_id')->constrained('matches');
             $table->foreignId('sender_id')->constrained('users');
             $table->text('content')->nullable(false);
-            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -8,3 +8,5 @@ RUN apt-get update && \
 COPY . .
 
 EXPOSE 80
+
+CMD ['php artisan migrate:fresh --seed']
