@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCodesnippetsTable extends Migration
+class CreateLikesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateCodesnippetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('codesnippets', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->text('content')->nullable(false);
-            $table->string('language')->nullable(false);
-            $table->string('theme')->nullable(false);
+            $table->foreignId('user_id_of_liked_user')->constrained('users')->onDelete('cascade');
+            $table->foreignId('match_id')->nullable()->constrained('matches');
+            $table->string('type');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateCodesnippetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('codesnippets');
+        Schema::dropIfExists('likes');
     }
 }
