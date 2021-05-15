@@ -22,11 +22,11 @@ class Like extends Model
 
     public function target(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id', 'user_id_of_liked_user');
+        return $this->belongsTo(User::class, 'user_id_of_liked_user', 'id');
     }
 
-    public function match(): HasOne
+    public function match(): BelongsTo
     {
-        return $this->hasOne(Match::class);
+        return $this->belongsTo(Match::class);
     }
 }

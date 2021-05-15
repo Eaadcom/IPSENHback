@@ -22,4 +22,31 @@ class LikeFactory extends Factory
             'match_id' => $this->faker->boolean($chanceOfGettingTrue = 33) ? Match::factory()->create()->id : null,
     	];
     }
+
+    public function liked(Match $match)
+    {
+        return $this->state(function (array $attributes) use ($match){
+            return [
+                'type' => 'like',
+            ];
+        });
+    }
+
+    public function disliked(Match $match)
+    {
+        return $this->state(function (array $attributes) use ($match){
+            return [
+                'type' => 'disliked',
+            ];
+        });
+    }
+
+    public function super(Match $match)
+    {
+        return $this->state(function (array $attributes) use ($match){
+            return [
+                'type' => 'super',
+            ];
+        });
+    }
 }

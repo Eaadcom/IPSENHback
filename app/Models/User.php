@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Lumen\Auth\Authorizable;
 
@@ -24,14 +26,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany(Codesnippet::class);
     }
 
-    public function givenLikes(): HasMany
+    public function givenLikes(): BelongsToMany
     {
-        return $this->hasMany(Like::class);
+        return $this->belongsToMany(Like::class);
     }
 
-    public function receivedLikes(): HasMany
+    public function receivedLikes(): BelongsToMany
     {
-        return $this->hasMany(Like::class, 'user_id_of_liked_user');
+        return $this->belongsToMany(Like::class);
     }
 
     public function sendMessages(): HasMany
