@@ -12,7 +12,7 @@ class Like extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type'
+        'user_id', 'user_id_of_liked_user', 'type'
     ];
 
     public function user(): BelongsTo
@@ -25,8 +25,8 @@ class Like extends Model
         return $this->belongsTo(User::class, 'user_id_of_liked_user', 'id');
     }
 
-    public function match(): BelongsTo
-    {
-        return $this->belongsTo(Match::class);
-    }
+//    public function match(): BelongsTo
+//    {
+//        return $this->belongsTo(Match::class);
+//    }
 }
