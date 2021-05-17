@@ -13,7 +13,16 @@
 |
 */
 
-use App\Models\User;
+
+$router->group(['prefix' => 'auth'], function () use ($router) {
+
+    // auth/login
+    $router->post('login', 'AuthController@login');
+
+    // auth/register
+    $router->post('register', 'AuthController@register');
+
+});
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
