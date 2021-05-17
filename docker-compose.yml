@@ -8,9 +8,9 @@ services:
       APP_ENV: '${APP_ENV}'
       APP_DEBUG: '${APP_DEBUG}'
       APP_URL: '${APP_URL}'
+      DB_HOST: 'mysql'
     volumes:
       - '.:/var/www/html/'
-      - vendor:/var/www/html/vendor
     ports:
       - "8080:80"
     depends_on:
@@ -19,6 +19,8 @@ services:
   mysql:
     image: mysql:5.7
     container_name: mysql
+    ports:
+    - '3306:3306'
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'
@@ -26,5 +28,3 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
 
-volumes:
-  vendor:
