@@ -17,7 +17,7 @@ class Message extends Model
 
     public function match(): BelongsTo
     {
-        return $this->belongsTo(Match::class);
+        return $this->belongsTo(LikeMatch::class);
     }
 
     public function sender(): BelongsTo

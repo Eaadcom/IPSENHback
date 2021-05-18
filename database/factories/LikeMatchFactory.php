@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Match;
+use App\Models\LikeMatch;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MatchFactory extends Factory
+class LikeMatchFactory extends Factory
 {
-    protected $model = Match::class;
+    protected $model = LikeMatch::class;
 
     public function definition(): array
     {
