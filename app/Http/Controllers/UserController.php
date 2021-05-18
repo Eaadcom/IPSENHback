@@ -60,7 +60,7 @@ class UserController extends Controller
             'interest' => 'required',
         ]);
 
-        $this->userService->update(User::find($id), $request->all());
+        $this->userService->update(User::wherefind($id), $request->all());
     }
 
     public function delete(Request $request, $id)
