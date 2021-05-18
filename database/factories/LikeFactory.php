@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Like;
-use App\Models\Match;
+use App\Models\LikeMatch;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,11 +19,11 @@ class LikeFactory extends Factory
             'user_id' => User::factory()->create()->id,
             'user_id_of_liked_user' => User::factory()->create()->id,
             'type' => $this->faker->randomElement(['like', 'dislike', 'super']),
-            'match_id' => $this->faker->boolean($chanceOfGettingTrue = 33) ? Match::factory()->create()->id : null,
+            'match_id' => $this->faker->boolean($chanceOfGettingTrue = 33) ? LikeMatch::factory()->create()->id : null,
     	];
     }
 
-    public function liked(Match $match)
+    public function liked(LikeMatch $match)
     {
         return $this->state(function (array $attributes) use ($match){
             return [
@@ -32,7 +32,7 @@ class LikeFactory extends Factory
         });
     }
 
-    public function disliked(Match $match)
+    public function disliked(LikeMatch $match)
     {
         return $this->state(function (array $attributes) use ($match){
             return [
@@ -41,7 +41,7 @@ class LikeFactory extends Factory
         });
     }
 
-    public function super(Match $match)
+    public function super(LikeMatch $match)
     {
         return $this->state(function (array $attributes) use ($match){
             return [
