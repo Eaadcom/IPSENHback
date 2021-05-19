@@ -13,8 +13,6 @@
 |
 */
 
-use App\Models\User;
-
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->group(['prefix' => 'v1'], function () use ($router) {
@@ -25,6 +23,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/user/{id}', 'UserController@put');
         $router->delete('/user/{id}', 'UserController@delete');
 
+        // api/v1/codesnippets
+        $router->get('/codesnippet/{id}', 'CodesnippetController@getByUserId');
+        $router->post('/codesnippet', 'CodesnippetController@post');
+        $router->put('/codesnippet/{id}', 'CodesnippetController@put');
+        $router->delete('/codesnippet/{id}', 'CodesnippetController@delete');
 
     });
 });

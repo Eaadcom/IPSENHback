@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Codesnippet;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class CodesnippetsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,9 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            UsersTableSeeder::class,
-            CodesnippetsTableSeeder::class
-        ]);
+        Codesnippet::factory()->create();
     }
 }
