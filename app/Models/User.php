@@ -20,11 +20,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'about_me', 'age_range_bottom', 'age_range_top', 'max_distance', 'interest'
     ];
 
-    public static function find(int $id)
-    {
-        return User::find($id);
-    }
-
     public function codesnippets(): HasMany
     {
         return $this->hasMany(Codesnippet::class);
