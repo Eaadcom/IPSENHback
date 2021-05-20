@@ -2,11 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
+
+/**
+ * App\Models\Like
+ * @method static Builder userInMatch($likeMatchId, int $userId)
+ */
 class Like extends Model
 {
     use HasFactory;
@@ -28,5 +33,12 @@ class Like extends Model
     public function likeMatch(): BelongsTo
     {
         return $this->belongsTo(LikeMatch::class);
+    }
+
+    public function scopeUserInMatch($query, $likeMatchId, $userId)
+    {
+        return $query->where('liked_match_id', $likeMatchId)->where(function ($query) use ($userId) {
+            return $query->where('user_id', $userId)->orWhere('user_id_of_liked_user', $userId);
+        });
     }
 }

@@ -13,7 +13,8 @@
 |
 */
 
-use App\Models\User;
+use App\Events\MessageCreated;
+use Illuminate\Support\Facades\Redis;
 
 $router->group(['prefix' => 'api'], function () use ($router) {
 
