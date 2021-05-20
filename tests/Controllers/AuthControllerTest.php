@@ -7,7 +7,7 @@ use Faker\Factory;
 use Illuminate\Http\Response;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 
-class AuthControllerTest extends \TestCase
+class  AuthControllerTest extends \TestCase
 {
     use DatabaseMigrations;
 
@@ -19,6 +19,7 @@ class AuthControllerTest extends \TestCase
         $response = $this->post('auth/register', $user->toArray());
 
         $response->seeJsonStructure([
+            'api_token',
             'user' => [
                 'id',
                 'email',
@@ -53,7 +54,6 @@ class AuthControllerTest extends \TestCase
                 'email' => ['The email has already been taken.']
             ])
             ->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
     }
 
     public function test_user_can_login_with_valid_credentials()

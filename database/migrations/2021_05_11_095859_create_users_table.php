@@ -15,20 +15,22 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->string('password')->nullable(false);
 
-            $table->string('first_name')->nullable(false);
-            $table->string('middle_name')->nullable(false);
-            $table->string('last_name')->nullable(false);
-            $table->date('date_of_birth')->nullable(false);
-            $table->text('about_me')->nullable(false);
-            $table->integer('age_range_bottom')->nullable(false);
-            $table->integer('age_range_top')->nullable(false);
-            $table->integer('max_distance')->nullable(false);
+            $table->string('email')->unique();
+            $table->string('password')->notNullable();
+            $table->string('api_token')->nullable();
+
+            $table->string('first_name')->notNullable();
+            $table->string('middle_name')->notNullable();
+            $table->string('last_name')->notNullable();
+            $table->date('date_of_birth')->notNullable();
+            $table->text('about_me')->notNullable();
+            $table->integer('age_range_bottom')->notNullable();
+            $table->integer('age_range_top')->notNullable();
+            $table->integer('max_distance')->notNullable();
             $table->string('interest');
 
-            $table->rememberToken();
+            $table->index(['id', 'email', 'api_token']);
             $table->timestamps();
         });
     }

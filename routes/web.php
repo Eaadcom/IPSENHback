@@ -13,7 +13,6 @@
 |
 */
 
-
 $router->group(['prefix' => 'auth'], function () use ($router) {
 
     // auth/login
@@ -33,7 +32,6 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->post('/user', 'UserController@post');
         $router->put('/user/{id}', 'UserController@put');
         $router->delete('/user/{id}', 'UserController@delete');
-
 
     });
 });

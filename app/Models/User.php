@@ -13,7 +13,7 @@ use Laravel\Lumen\Auth\Authorizable;
 use phpDocumentor\Reflection\Types\Mixed_;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
+class User extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable, HasFactory;
 
@@ -23,7 +23,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     protected $hidden = [
-        'password',
+        'password', 'api_token',
     ];
 
     public function codesnippets(): HasMany
@@ -44,25 +44,5 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function sendMessages(): HasMany
     {
         return $this->hasMany(Message::class);
-    }
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims(): array
-    {
-        return [];
     }
 }
