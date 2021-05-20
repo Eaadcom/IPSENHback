@@ -25,6 +25,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/user/{id}', 'UserController@put');
         $router->delete('/user/{id}', 'UserController@delete');
 
-
+        // api/v1/messages
+        $router->post('/message', 'MessageController@post');
     });
 });

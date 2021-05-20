@@ -15,7 +15,7 @@ class Message extends Model
         'content'
     ];
 
-    public function match(): BelongsTo
+    public function likeMatch(): BelongsTo
     {
         return $this->belongsTo(LikeMatch::class);
     }

@@ -25,7 +25,7 @@ class Like extends Model
         return $this->belongsTo(User::class, 'user_id_of_liked_user', 'id');
     }
 
-    public function match(): BelongsTo
+    public function likeMatch(): BelongsTo
     {
         return $this->belongsTo(LikeMatch::class);
     }
