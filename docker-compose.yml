@@ -28,3 +28,8 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
