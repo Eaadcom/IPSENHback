@@ -17,10 +17,6 @@ class MessageCreatedTest extends TestCase
      */
     public function testExample()
     {
-        Event::fake([
-            MessageCreated::class,
-        ]);
-
         Like::factory()->create();
         $message = Message::factory()->create([
             'like_match_id' => 1,
@@ -28,18 +24,8 @@ class MessageCreatedTest extends TestCase
             'content' => 'test'
         ]);
 
-        Event::fake();
+        $this->expectsEvents(MessageCreated::class);
 
-        // Perform order shipping...
-
-        // Assert that an event was dispatched...
-        Event::assertDispatched(OrderShipped::class);
-
-
-
-
-//        $this->expectsEvents('App\Events\MessageCreated');
-//        event(new MessageCreated($message));
-//        Event::assertDispatched(MessageCreated::class);
+        $event = event(new MessageCreated($message));
     }
 }

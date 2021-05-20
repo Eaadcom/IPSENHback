@@ -15,7 +15,6 @@ class MessageControllerTest extends TestCase
      */
     public function test_authenticated_user_can_create_message()
     {
-
         $like = Like::factory()->create();
         $sender = $like->user;
         $likeMatch = $like->likeMatch;
@@ -32,10 +31,5 @@ class MessageControllerTest extends TestCase
             'sender_id' => $sender->id,
             'like_match_id' => $likeMatch->id
         ]);
-    }
-
-    public function test_not_authenticated_user_cannot_create_message()
-    {
-        // ...
     }
 }
