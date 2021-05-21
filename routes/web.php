@@ -13,9 +13,6 @@
 |
 */
 
-use App\Events\MessageCreated;
-use Illuminate\Support\Facades\Redis;
-
 $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->group(['prefix' => 'v1'], function () use ($router) {
@@ -27,6 +24,10 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->delete('/user/{id}', 'UserController@delete');
 
         // api/v1/messages
-        $router->post('/message', 'MessageController@post');
+        $router->post('message', 'MessageController@post');
+
+        // api/v1/likeMatches
+        $router->get('likematch', 'LikeMatchController@getAll');
+        $router->get('likematch/{id}', 'LikeMatchController@get');
     });
 });
