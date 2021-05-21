@@ -28,5 +28,10 @@ $router->group(['prefix' => 'auth'], function ($router) {
 
 // protected routes
 $router->group(['prefix' => 'api', 'midddleware' => 'auth'], function ($router) {
-    // todo ..
+    // api/v1/messages
+    $router->post('message', 'MessageController@post');
+
+    // api/v1/likeMatches
+    $router->get('likematch', 'LikeMatchController@getAll');
+    $router->get('likematch/{id}', 'LikeMatchController@get');
 });
