@@ -14,10 +14,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-//        User::factory()->count(2)->create();
-
-        Like::factory()->create();
-        Message::factory()->create();
-
+        User::factory()->create([
+            'email' => 'user@example.com',
+        ]);
     }
 }
