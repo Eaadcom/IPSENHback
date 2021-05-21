@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use App\Models\Like;
+use App\services\LikeMatchService;
 use Illuminate\Http\Request;
 use App\services\LikeService;
 
@@ -11,15 +10,22 @@ class LikeController extends Controller
 {
 
     /**
+     * @var LikeMatchService
+     */
+    private $likeMatchService;
+
+    /**
      * @var LikeService
      */
     private $likeService;
 
-    public function __construct(LikeService $likeService)
+    public function __construct(LikeService $likeService, LikeMatchService $likeMatchService)
     {
         $this->likeService = $likeService;
+        $this->likeMatchService = $likeMatchService;
     }
 
+    // Checkt niet of er al een bestaande like is in de DB, er kunnen dubbele records worden aangemaakt.
     public function post(Request $request)
     {
         $this->validate($request, [
@@ -29,15 +35,26 @@ class LikeController extends Controller
         ]);
 
         if (
-            (DB::table('likes')
-            ->where('user_id', '=', $request['user_id_of_liked_user'])
-            ->where('user_id_of_liked_user', '=', $request['user_id'])
-            ->get()) != '[]'
-        ) {
+            $this->likeService->checkIfLikeExists($request->all()))
+        {
+            // auth()->id() needs to be used in stead of passing the user_id constant
+
             $this->likeService->returnLike($request->all());
+
+            if ($this->likeService->checkIfThereIsAMatch(
+                [$request['user_id'], $request['user_id_of_liked_user']])
+            )
+            {
+                $this->likeMatchService->create();
+            }
+
+
+
+
         } else {
             $this->likeService->create($request->all());
         }
-        // Dit checkt nog niet of er al een bestaande like is in de DB, het kan momenteel dubbele records aanmaken.
+
+        return response()->json(['message' => 'Successfully created the like.']);
     }
 }
