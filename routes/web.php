@@ -27,7 +27,7 @@ $router->group(['prefix' => 'auth'], function ($router) {
 });
 
 // protected routes
-$router->group(['prefix' => 'api', 'midddleware' => 'auth'], function ($router) {
+$router->group(['prefix' => 'api/v1', 'midddleware' => 'auth'], function ($router) {
     // api/v1/messages
     $router->post('message', 'MessageController@post');
 
