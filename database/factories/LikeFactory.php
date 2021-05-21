@@ -13,13 +13,11 @@ class LikeFactory extends Factory
 
     public function definition(): array
     {
-
         return [
-            'id' => $this->faker->uuid,
             'user_id' => User::factory()->create()->id,
             'user_id_of_liked_user' => User::factory()->create()->id,
             'type' => $this->faker->randomElement(['like', 'dislike', 'super']),
-            'match_id' => $this->faker->boolean($chanceOfGettingTrue = 33) ? LikeMatch::factory()->create()->id : null,
+            'like_match_id' => LikeMatch::factory()->create()->id,
     	];
     }
 

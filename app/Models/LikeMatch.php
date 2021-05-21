@@ -13,6 +13,10 @@ class LikeMatch extends Model
 {
     use SoftDeletes, HasFactory;
 
+    protected $with = [
+        'messages',
+    ];
+
     public function like(): HasOne
     {
         return $this->hasOne(Like::class);
