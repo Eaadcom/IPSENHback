@@ -7,7 +7,6 @@ namespace App\services;
 use App\Events\MessageCreated;
 use App\Models\LikeMatch;
 use App\Models\Message;
-use Illuminate\Support\Facades\Broadcast;
 
 class MessageService
 {
@@ -28,13 +27,8 @@ class MessageService
     {
         $message->fill($data);
 
-        $message->likeMatch()->associate(
-            $likeMatch
-        );
-
-        $message->sender()->associate(
-            auth()->user()
-        );
+        $message->likeMatch()->associate($likeMatch);
+        $message->sender()->associate(auth()->user());
 
         $message->save();
 

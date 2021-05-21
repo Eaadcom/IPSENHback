@@ -4,7 +4,6 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Message;
 use App\services\MessageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,9 +21,8 @@ class MessageController extends Controller
         $this->messageService = $messageService;
     }
 
-    public function post(Request $request): string
+    public function post(Request $request): JsonResponse
     {
-
      $this->validate($request, [
             'content' => [
                 'required'
