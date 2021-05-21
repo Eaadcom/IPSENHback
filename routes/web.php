@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,9 +13,12 @@
 |
 */
 
-$router->group(['prefix' => 'auth'], function () use ($router) {
+use Laravel\Lumen\Routing\Router;
+
+$router->group(['prefix' => 'auth'], function ($router) {
 
     // auth/login
+
     $router->post('login', 'AuthController@login');
 
     // auth/register
@@ -23,15 +26,7 @@ $router->group(['prefix' => 'auth'], function () use ($router) {
 
 });
 
-$router->group(['prefix' => 'api'], function () use ($router) {
-
-    $router->group(['prefix' => 'v1'], function () use ($router) {
-
-        // api/v1/users
-        $router->get('/user', 'UserController@get');
-        $router->post('/user', 'UserController@post');
-        $router->put('/user/{id}', 'UserController@put');
-        $router->delete('/user/{id}', 'UserController@delete');
-
-    });
+// protected routes
+$router->group(['prefix' => 'api', 'midddleware' => 'auth'], function ($router) {
+    // todo ..
 });

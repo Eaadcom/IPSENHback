@@ -2,65 +2,63 @@
 
 namespace App\services;
 
-use App\Models\Like;
 use App\Models\User;
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\UnauthorizedException;
 
 class AuthService
 {
 
     /**
-     * @param array $credentials
-     * @return User|null
+     * @var EloquentUserProvider
      */
-    public function attempt(array $credentials): ?Authenticatable
+    private $eloquentUserProvider;
+
+    public function __construct()
     {
-        $user = $this->retrieveByCredentials($credentials);
-
-        if ($this->validateCredentials($user, $credentials)) {
-            return $user;
-        }
-
-        return null;
+        $this->eloquentUserProvider = new EloquentUserProvider(app('hash'), User::class);
     }
 
     public function register(array $data): User
     {
         $user = new User($data);
+
         $user->password = Hash::make($data['password']);
+        $user->api_token = base64_encode(Str::random(40));
+
         $user->save();
 
         return $user;
     }
 
-    public function retrieveByCredentials(array $credentials): Authenticatable
+    public function login(array $credentials): UserContract
     {
+        $user = $this->eloquentUserProvider->retrieveByCredentials($credentials);
 
-        $query = User::query();
+        if ($this->hasValidCredentials($user, $credentials)) {
+            return $this->updateApiToken($user);
 
-        foreach ($credentials as $key => $value) {
-            if (Str::contains($key, 'password')) {
-                continue;
-            }
-
-            if (is_array($value) || $value instanceof Arrayable) {
-                $query->whereIn($key, $value);
-            } else {
-                $query->where($key, $value);
-            }
         }
-        return $query->first();
+
+        throw new UnauthorizedException();
     }
 
-    private function validateCredentials(UserContract $user, array $credentials): bool
+    private function hasValidCredentials(?UserContract $user, array $credentials)
     {
-        $plain = $credentials['password'];
+        return !is_null($user) && $this->eloquentUserProvider->validateCredentials($user, $credentials);
 
-        return Hash::check($plain, $user->getAuthPassword());
     }
 
+    private function updateApiToken(UserContract $user): UserContract
+    {
+        $apiToken = base64_encode(Str::random(40));
+
+        $user->api_token = $apiToken;
+        $user->save();
+
+        return $user;
+    }
 }

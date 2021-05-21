@@ -3,25 +3,50 @@
 namespace Controllers;
 
 use App\Models\User;
-use Faker\Factory;
-use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Laravel\Lumen\Testing\DatabaseMigrations;
+use TestCase;
 
-class  AuthControllerTest extends \TestCase
+class  AuthControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function test_user_can_create_account()
+    protected function setUp(): void
     {
-        $user = User::factory()->make()
-            ->makeVisible('password');
+        parent::setUp();
+    }
 
-        $response = $this->post('auth/register', $user->toArray());
+    public function test_post_auth_login_returns_status_200_when_logging_with_valid_credential()
+    {
+        // uses default password: secret
+        $user = User::factory()->create();
 
-        $response->seeJsonStructure([
+        $credentials = ['email' => $user->email, 'password' => 'secret'];
+
+        $this->post_auth_login($credentials)->assertResponseOk();
+
+    }
+
+    public function test_post_auth_login_returns_status_401_when_logging_with_invalid_credential()
+    {
+        // uses default password: secret
+        $user = User::factory()->create();
+
+        $credentials = ['email' => $user->email, 'password' => 'not_a_secret'];
+
+        $this->post_auth_login($credentials)->assertResponseStatus(401);
+
+    }
+
+    public function test_post_auth_login_returns_json()
+    {
+        $user = User::factory()->create();
+
+        $credentials = ['email' => $user->email, 'password' => 'secret'];
+
+        $this->post_auth_login($credentials)->seeJsonStructure([
             'api_token',
             'user' => [
-                'id',
                 'email',
                 'first_name',
                 'middle_name',
@@ -31,84 +56,129 @@ class  AuthControllerTest extends \TestCase
                 'age_range_bottom',
                 'age_range_top',
                 'max_distance',
-                'interest',
-                'updated_at',
-                'created_at',
+                'interest'
             ]
-        ])->assertResponseOk();
+        ]);
     }
 
-    public function test_user_cannot_create_account_with_existing_email()
+    public function test_post_auth_login_returns_json_with_out_password()
     {
+        $user = User::factory()->create();
 
+        $credentials = ['email' => $user->email, 'password' => 'secret'];
+
+        $this->post_auth_register($credentials)->dontSeeJson([
+            'user' => ['password']
+        ]);
+    }
+
+
+    public function test_post_auth_register_returns_status_200()
+    {
+        $user = User::factory()->make()
+            ->makeVisible('password')
+            ->toArray();
+
+        $this->post_auth_register($user)->assertResponseOk();
+    }
+
+    public function test_post_auth_register_returns_status_422_when_missing_user_data()
+    {
+        $missingFields = [
+            'password', 'email', 'first_name', 'middle_name', 'last_name', 'date_of_birth',
+            'about_me', 'age_range_bottom', 'age_range_top', 'max_distance', 'interest'
+        ];
+
+        $user = User::factory()->make()
+            ->makeVisible('password')
+            ->makeHidden(Arr::random($missingFields))
+            ->toArray();
+
+        $this->post_auth_register($user)->assertResponseStatus(422);
+    }
+
+
+    public function test_post_auth_register_returns_json()
+    {
+        $user = User::factory()->make()
+            ->makeVisible('password')
+            ->toArray();
+
+        $this->post_auth_register($user)->seeJsonStructure([
+            'api_token',
+            'api_token',
+            'user' => [
+                'email',
+                'first_name',
+                'middle_name',
+                'last_name',
+                'date_of_birth',
+                'about_me',
+                'age_range_bottom',
+                'age_range_top',
+                'max_distance',
+                'interest'
+            ]
+        ]);
+    }
+
+    public function test_post_auth_register_returns_json_with_out_password()
+    {
+        $user = User::factory()->make()
+            ->makeVisible('password')
+            ->toArray();
+
+        $this->post_auth_register($user)->dontSeeJson([
+            'user' => [
+                'password'
+            ]
+        ]);
+    }
+
+    public function test_post_auth_register_creates_user()
+    {
+        $user = User::factory()
+            ->make()
+            ->makeVisible('password');
+
+        $this->post_auth_register($user->toArray());
+
+        // password is hashed
+        // so we hide it to compare it with the database
+        $user->makeHidden('password');
+
+        $this->seeInDatabase('users', $user->toArray());
+    }
+
+    public function test_post_auth_register_cannot_creates_user_with_existing_email()
+    {
         User::factory()->create([
-            'email' => 'user@email.com'
+            'email' => 'user@example.com'
         ]);
 
         $user = User::factory()
-            ->make(['email' => 'user@email.com'])
-            ->makeVisible('password');
+            ->make([
+                'email' => 'user@example.com',
+            ]);
 
-        $this->post('auth/register', $user->toArray())
-            ->seeJsonEquals([
-                'email' => ['The email has already been taken.']
-            ])
-            ->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->post_auth_register($user->toArray());
+
+
+        $this->missingFromDatabase('users', ['email' => $user->email, 'first_name' => $user->first_name]);
     }
 
-    public function test_user_can_login_with_valid_credentials()
+    private function post_auth_login(array $data, User $authUser = null)
     {
-
-        $password = $this->faker->word();
-
-        // password = secret
-        $user = User::factory()->create([
-            'email' => $this->faker->email,
-            'password' => app('hash')->make($password)
-        ]);
-
-        $this->post('auth/login', [
-            'email' => $user->email,
-            'password' => $password
-        ])->seeJsonStructure([
-            'token',
-            'token_type',
-            'expires_in',
-        ])->assertResponseOk();
-
-        $this->seeInDatabase('users', ['email' => $user->email]);
+        return !is_null($authUser)
+            ? $this->actingAs($authUser)->post('auth/login', $data)
+            : $this->post('auth/login', $data);
     }
 
-    public function test_user_cannot_login_with_invalid_email()
+    private function post_auth_register(array $data, User $authUser = null)
     {
-        $password = $this->faker->word();
-        $user = User::factory()->create([
-            'email' => $this->faker->email,
-            'password' => app('hash')->make($password)
-        ]);
-
-        $this->post('auth/login', [
-            'email' => 'invalid',
-            'password' => $password
-        ])->seeJsonEquals([
-            'message' => 'Unauthorized'
-        ])->assertResponseStatus(Response::HTTP_UNAUTHORIZED);
-
-    }
-
-    public function test_user_cannot_login_with_invalid_password()
-    {
-        $user = User::factory()->create([
-            'email' => $this->faker->email,
-            'password' => app('hash')->make($this->faker->word())
-        ]);
-
-        $this->post('auth/login', [
-            'email' => $user->email,
-            'password' => 'invalid'
-        ])->seeJsonEquals([
-            'message' => 'Unauthorized'
-        ])->assertResponseStatus(Response::HTTP_UNAUTHORIZED);
+        return !is_null($authUser)
+            ? $this->actingAs($authUser)->post('auth/register', $data)
+            : $this->post('auth/register', $data);
     }
 
 }

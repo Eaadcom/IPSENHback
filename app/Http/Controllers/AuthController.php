@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use Psy\Util\Json;
-use Tymon\JWTAuth\JWTGuard;
+use Illuminate\Http\Response;
+use Illuminate\Validation\UnauthorizedException;
 
 class AuthController extends Controller
 {
@@ -30,23 +27,19 @@ class AuthController extends Controller
             'email' => 'required|string',
             'password' => 'required|string',
         ]);
+        try {
 
-        $credentials = $request->only(['email', 'password']);
+            $credentials = $request->only(['email', 'password']);
+            $user = $this->authService->login($credentials);
 
-        // verbetern leesbaarheid
-        if (is_null($user = $this->authService->attempt($credentials))) {
-            return response()->json(['message' => 'authentication failed'], 422);
+            return response()->json([
+                'api_token' => $user->api_token,
+                'user' => $user
+            ]);
+
+        } catch (UnauthorizedException $exception) {
+            return response()->json(['message' => 'failed to authenticate user by credentials'], Response::HTTP_UNAUTHORIZED);
         }
-
-        $apiToken = base64_encode(Str::random(40));
-        $user->api_token = $apiToken;
-        $user->save();
-
-
-        return response()->json([
-            'api_token' => $apiToken,
-            'user' => $user
-        ]);
     }
 
     public function register(Request $request): JsonResponse
@@ -65,18 +58,11 @@ class AuthController extends Controller
             'interest' => 'required|string',
         ]);
 
-        try {
+        $user = $this->authService->register($request->all());
 
-            $user = $this->authService->register($request->all());
-            $user->update(['api_token' => $api_token = base64_encode(Str::random(40))]);
-
-            return response()->json([
-                'user' => $user,
-                'api_token' => $api_token
-            ]);
-
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'failed to register user'], 422);
-        }
+        return response()->json([
+            'user' => $user,
+            'api_token' => $user->api_token
+        ]);
     }
 }
