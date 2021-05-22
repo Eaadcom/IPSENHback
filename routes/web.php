@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,25 +13,35 @@
 |
 */
 
-use App\Models\User;
+use Laravel\Lumen\Routing\Router;
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['prefix' => 'auth'], function ($router) {
 
-    $router->group(['prefix' => 'v1'], function () use ($router) {
+    // auth/login
 
-        // api/v1/users
-        $router->get('/user', 'UserController@get');
-        $router->post('/user', 'UserController@post');
-        $router->put('/user/{id}', 'UserController@put');
-        $router->delete('/user/{id}', 'UserController@delete');
+    $router->post('login', 'AuthController@login');
 
-        $router->get('/user/potentialMatches', 'UserController@getPotentialMatches');
 
-        // api/v1/like
-        $router->post('/like', 'LikeController@post');
+    $router->get('/user/potentialMatches', 'UserController@getPotentialMatches');
 
-        // api/v1/likeMatch
-        $router->delete('/likeMatch/{id}', 'likeMatchController@delete');
+    // api/v1/like
+    $router->post('/like', 'LikeController@post');
 
-    });
+    // api/v1/likeMatch
+    $router->delete('/likeMatch/{id}', 'likeMatchController@delete');
+
+    // auth/register
+    $router->post('register', 'AuthController@register');
+
+
+});
+
+// protected routes
+$router->group(['prefix' => 'api/v1', 'midddleware' => 'auth'], function ($router) {
+    // api/v1/messages
+    $router->post('message', 'MessageController@post');
+
+    // api/v1/likeMatches
+    $router->get('likematch', 'LikeMatchController@getAll');
+    $router->get('likematch/{id}', 'LikeMatchController@get');
 });

@@ -15,8 +15,11 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
             $table->string('email')->unique();
-            $table->string('password')->nullable(false);
+            $table->string('password')->notNullable();
+            $table->string('api_token')->nullable();
+
 
             $table->string('first_name')->nullable(false);
             $table->string('middle_name')->nullable(false);
@@ -29,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->integer('max_distance')->nullable(false);
             $table->string('interest');
 
-            $table->rememberToken();
+            $table->index(['id', 'email', 'api_token']);
             $table->timestamps();
         });
     }

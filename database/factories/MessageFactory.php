@@ -14,7 +14,7 @@ class MessageFactory extends Factory
     public function definition(): array
     {
     	return [
-    	    'match_id' => LikeMatch::factory()->create()->id,
+    	    'like_match_id' => LikeMatch::factory()->create()->id,
             'sender_id' => User::factory()->create()->id,
             'content' => $this->faker->paragraph(),
     	];
