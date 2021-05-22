@@ -25,9 +25,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->put('/user/{id}', 'UserController@put');
         $router->delete('/user/{id}', 'UserController@delete');
 
+        $router->get('/user/potentialMatches', 'UserController@getPotentialMatches');
+
         // api/v1/like
         $router->post('/like', 'LikeController@post');
 
+        // api/v1/likeMatch
+        $router->delete('/likeMatch/{id}', 'likeMatchController@delete');
 
     });
 });

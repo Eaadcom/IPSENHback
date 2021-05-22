@@ -28,6 +28,7 @@ class UserFactory extends Factory
             'first_name' => $this->faker->firstName(),
             'middle_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
+            'gender' => $this->faker->randomElement(['male', 'female']),
             'date_of_birth' => $this->faker->date(),
             'about_me' => $this->faker->text(),
             'age_range_bottom' => $this->faker->numberBetween(20, 30),

@@ -18,7 +18,6 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-
     public function get(Request $request)
     {
         return User::first();
@@ -66,6 +65,16 @@ class UserController extends Controller
     public function delete(Request $request, $id)
     {
         $this->userService->delete($id);
+    }
+
+    public function getPotentialMatches(Request $request): array
+    {
+        $this->validate($request, [
+            'user_id' => 'required',
+        ]);
+
+        return $this->userService->getPotentialMatches($request['user_id']);
+
     }
 
 }

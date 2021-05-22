@@ -5,6 +5,7 @@ namespace App\services;
 
 
 use App\Models\LikeMatch;
+use Carbon\Carbon;
 
 class LikeMatchService
 {
@@ -34,7 +35,10 @@ class LikeMatchService
 
     public function delete($id)
     {
-        LikeMatch::find($id)->delete();
+
+        LikeMatch::where('id',$id)
+            ->update(['deleted_at'=>Carbon::now()]);
+
     }
 
 }

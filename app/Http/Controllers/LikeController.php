@@ -49,8 +49,6 @@ class LikeController extends Controller
             }
 
 
-
-
         } else {
             $this->likeService->create($request->all());
         }
