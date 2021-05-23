@@ -18,17 +18,7 @@ use Laravel\Lumen\Routing\Router;
 $router->group(['prefix' => 'auth'], function ($router) {
 
     // auth/login
-
     $router->post('login', 'AuthController@login');
-
-
-    $router->get('/user/potentialMatches', 'UserController@getPotentialMatches');
-
-    // api/v1/like
-    $router->post('/like', 'LikeController@post');
-
-    // api/v1/likeMatch
-    $router->delete('/likeMatch/{id}', 'likeMatchController@delete');
 
     // auth/register
     $router->post('register', 'AuthController@register');
@@ -44,4 +34,11 @@ $router->group(['prefix' => 'api/v1', 'midddleware' => 'auth'], function ($route
     // api/v1/likeMatches
     $router->get('likematch', 'LikeMatchController@getAll');
     $router->get('likematch/{id}', 'LikeMatchController@get');
+    $router->delete('likematch/{id}', 'likeMatchController@delete');
+
+    // api/v1/like
+    $router->post('like', 'LikeController@post');
+
+    // api/v1/user
+    $router->get('user/potentialmatches/{id}', 'UserController@getPotentialMatches');
 });

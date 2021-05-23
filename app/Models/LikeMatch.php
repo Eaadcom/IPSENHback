@@ -13,6 +13,10 @@ class LikeMatch extends Model
 {
     use SoftDeletes, HasFactory;
 
+    protected $fillable = [
+        'deleted_at'
+    ];
+
     protected $with = [
         'messages',
     ];

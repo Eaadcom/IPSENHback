@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -67,13 +68,10 @@ class UserController extends Controller
         $this->userService->delete($id);
     }
 
-    public function getPotentialMatches(Request $request): array
+    public function getPotentialMatches($id): array
     {
-        $this->validate($request, [
-            'user_id' => 'required',
-        ]);
 
-        return $this->userService->getPotentialMatches($request['user_id']);
+        return $this->userService->getPotentialMatches($id);
 
     }
 

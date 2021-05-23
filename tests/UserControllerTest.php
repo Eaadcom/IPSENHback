@@ -1,0 +1,49 @@
+<?php
+
+use Laravel\Lumen\Testing\DatabaseMigrations;
+use App\Models\User;
+
+class UserControllerTest extends TestCase
+{
+
+    use DatabaseMigrations;
+
+    private $userThatIsRequesting;
+    private $userThatIsPotentialMatch;
+    private $getPotentialMatchesEndpoint = '/api/v1/user/potentialmatches/';
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->userThatIsRequesting = User::factory()->create([
+            'gender' => 'male',
+            'age_range_top' => 20,
+            'age_range_bottom' => 20,
+            'date_of_birth' => '1998-1-1',
+            'interest' => 'female'
+        ]);
+        $this->userThatIsPotentialMatch = User::factory()->create([
+            'gender' => 'female',
+            'age_range_top' => 20,
+            'age_range_bottom' => 20,
+            'date_of_birth' => '1998-1-1',
+            'interest' => 'male'
+        ]);
+    }
+
+    public function test_api_post_like_returns_200(){
+        $requestingUserid = $this->userThatIsRequesting->id;
+        $this->getPotentialMatches($requestingUserid)->assertResponseOk();
+    }
+
+    public function test_api_get_potential_matches_returns_404(){
+        $faultyRequestingUserId = rand();
+        $this->getPotentialMatches($faultyRequestingUserId)->assertResponseStatus(404);
+    }
+
+    private function getPotentialMatches(int $id)
+    {
+        return $this->get($this->getPotentialMatchesEndpoint . $id);
+    }
+}

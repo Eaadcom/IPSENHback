@@ -41,7 +41,7 @@ class UserService
     public function getPotentialMatches(int $id): array
     {
 
-        $user = User::find($id);
+        $user = User::findOrFail($id);
 
         $maxAge = Carbon::createFromFormat('Y-m-d', $user['date_of_birth'])
             ->addYears($user['age_range_top'])->year;

@@ -13,10 +13,7 @@ class LikeMatchService
 
     public function create()
     {
-        $likeMatch =
-            new LikeMatch();
-        error_log($likeMatch);
-        $likeMatch->save();
+        return LikeMatch::factory()->create()->id;
     }
 
     public function update(LikeMatch $likematch, array $data)
@@ -37,7 +34,7 @@ class LikeMatchService
     public function delete($id)
     {
 
-        LikeMatch::where('id',$id)
+        return LikeMatch::query()->findOrFail($id)
             ->update(['deleted_at'=>Carbon::now()]);
 
     }

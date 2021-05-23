@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\services\LikeMatchService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class LikeMatchController extends Controller
 {
@@ -20,9 +19,10 @@ class LikeMatchController extends Controller
         $this->likeMatchService = $likeMatchService;
     }
 
-    public function delete(Request $request, $id)
+    public function delete($id): JsonResponse
     {
-        $this->likeMatchService->delete($id);
+        $response = $this->likeMatchService->delete($id);
+        return response()->json(['message' => $response]);
     }
 
     public function get($id): JsonResponse
