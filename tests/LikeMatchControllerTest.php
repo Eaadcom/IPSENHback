@@ -38,7 +38,7 @@ class LikeMatchControllerTest extends TestCase
 
     private function getById($id)
     {
-        return $this->get($this->getByIdEndpoint . $id);
+        return $this->actingAs($this->like->user)->get($this->getByIdEndpoint . $id);
     }
 
     private function getOfUser(User $user)
