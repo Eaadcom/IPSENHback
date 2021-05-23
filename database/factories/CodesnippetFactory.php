@@ -13,11 +13,11 @@ class CodesnippetFactory extends Factory
 
     public function definition(): array
     {
-    	return [
+        return [
             'content' => $this->faker->paragraph,
             'language' => $this->faker->languageCode,
             'theme' => $this->faker->word,
-            'user_id' => User::factory()->create()->id
-    	];
+            'user_id' => User::factory()
+        ];
     }
 }

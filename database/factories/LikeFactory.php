@@ -14,34 +14,34 @@ class LikeFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory()->create()->id,
-            'user_id_of_liked_user' => User::factory()->create()->id,
+            'user_id' => User::factory(),
+            'user_id_of_liked_user' => User::factory(),
             'type' => $this->faker->randomElement(['like', 'dislike', 'super']),
-            'like_match_id' => LikeMatch::factory()->create()->id,
-    	];
+            'like_match_id' => LikeMatch::factory(),
+        ];
     }
 
-    public function liked(LikeMatch $match)
+    public function liked()
     {
-        return $this->state(function (array $attributes) use ($match){
+        return $this->state(function (array $attributes) {
             return [
                 'type' => 'like',
             ];
         });
     }
 
-    public function disliked(LikeMatch $match)
+    public function disliked()
     {
-        return $this->state(function (array $attributes) use ($match){
+        return $this->state(function (array $attributes) {
             return [
                 'type' => 'disliked',
             ];
         });
     }
 
-    public function super(LikeMatch $match)
+    public function super()
     {
-        return $this->state(function (array $attributes) use ($match){
+        return $this->state(function (array $attributes) {
             return [
                 'type' => 'super',
             ];
