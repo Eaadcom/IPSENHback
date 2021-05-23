@@ -7,6 +7,11 @@ use Illuminate\Http\JsonResponse;
 
 class LikeMatchController extends Controller
 {
+
+    /**
+     * @var LikeMatchService
+     */
+
     private $likeMatchService;
 
     public function __construct(LikeMatchService $likeMatchService)
@@ -14,11 +19,16 @@ class LikeMatchController extends Controller
         $this->likeMatchService = $likeMatchService;
     }
 
+    public function delete($id): JsonResponse
+    {
+        $response = $this->likeMatchService->delete($id);
+        return response()->json(['message' => $response]);
+    }
+
     public function get($id): JsonResponse
     {
         $response = $this->likeMatchService->getById($id);
         return response()->json(['message' => $response]);
-
     }
 
     public function getAll(): JsonResponse

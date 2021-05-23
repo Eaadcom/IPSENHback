@@ -50,6 +50,7 @@ class AuthController extends Controller
             'first_name' => 'required|string|min:3',
             'middle_name' => 'string|min:3',
             'last_name' => 'required|string|min:3',
+            'gender' => 'required|string',
             'date_of_birth' => 'required|date',
             'about_me' => 'required|string',
             'age_range_bottom' => 'required|integer',

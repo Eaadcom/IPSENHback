@@ -3,13 +3,42 @@
 
 namespace App\services;
 
-
 use App\Models\Like;
 use App\Models\LikeMatch;
 use Illuminate\Database\Eloquent\Collection;
+use Carbon\Carbon;
 
 class LikeMatchService
 {
+
+    public function create()
+    {
+        return LikeMatch::factory()->create()->id;
+    }
+
+    public function update(LikeMatch $likematch, array $data)
+    {
+        $this->save(
+            $likematch,
+            $data
+        );
+    }
+
+    public function save(LikeMatch $likematch, array $data)
+    {
+        $likematch->fill($data);
+
+        $likematch->save();
+    }
+
+    public function delete($id)
+    {
+
+        return LikeMatch::query()->findOrFail($id)
+            ->update(['deleted_at'=>Carbon::now()]);
+
+    }
+
     public function getById($id)
     {
         return LikeMatch::query()->findOrFail($id);

@@ -11,6 +11,7 @@ class LikeMatchControllerTest extends TestCase
     private $like;
     private $getByIdEndpoint = '/api/v1/likematch/';
     private $getAllEndpoint = '/api/v1/likematch';
+    private $deleteByIdEndpoint = '/api/v1/likematch/';
 
     protected function setUp(): void
     {
@@ -34,6 +35,21 @@ class LikeMatchControllerTest extends TestCase
     public function test_api_get_like_matches_of_user_returns_200()
     {
         $this->getOfUser($this->like->user)->assertResponseOk();
+    }
+
+    public function test_api_delete_match_returns_200(){
+        $existingId = $this->like->likeMatch->id;
+        $this->deleteById($existingId)->assertResponseOk();
+    }
+
+    public function test_api_delete_match_returns_404(){
+        $nonExistingId = rand();
+        $this->deleteById($nonExistingId)->assertResponseStatus(404);
+    }
+
+    private function deleteById($id)
+    {
+        return $this->delete($this->deleteByIdEndpoint . $id);
     }
 
     private function getById($id)
