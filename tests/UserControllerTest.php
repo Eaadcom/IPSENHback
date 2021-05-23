@@ -44,6 +44,6 @@ class UserControllerTest extends TestCase
 
     private function getPotentialMatches(int $id)
     {
-        return $this->get($this->getPotentialMatchesEndpoint . $id);
+        return $this->actingAs($this->userThatIsRequesting)->get($this->getPotentialMatchesEndpoint . $id);
     }
 }

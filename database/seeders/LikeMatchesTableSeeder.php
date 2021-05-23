@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+
+use App\Models\LikeMatch;
 use Illuminate\Database\Seeder;
 
-class UsersTableSeeder extends Seeder
+class LikeMatchesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,12 +15,8 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->create([
-            'email' => 'user@example.com',
-        ]);
-
-        User::factory()
-            ->count(5)
+        LikeMatch::factory()
+            ->count(rand(5, 10))
             ->create();
     }
 }

@@ -39,9 +39,9 @@ class MessageControllerTest extends TestCase
         ]);
     }
 
-    public function test_api_post_message_returns_status_422()
+    public function test_api_post_message_returns_status_401()
     {
-        $this->postAsNotAuthenticated()->assertResponseStatus(422);
+        $this->postAsNotAuthenticated()->assertResponseStatus(401);
     }
 
     public function test_api_post_message_doesnt_create_message_in_database()

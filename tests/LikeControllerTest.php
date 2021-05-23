@@ -29,16 +29,16 @@ class LikeControllerTest extends TestCase
     }
 
     public function test_api_post_like_returns_200(){
-        $this->postLike($this->like->toArray())->assertResponseOk();
+        $this->postLikeAsAuthenticatedUser($this->like->toArray())->assertResponseOk();
     }
 
     public function test_api_post_like_returns_422(){
         $faultyLike = [];
-        $this->postLike($faultyLike)->assertResponseStatus(422);
+        $this->postLikeAsAuthenticatedUser($faultyLike)->assertResponseStatus(422);
     }
 
-    private function postLike(array $like)
+    private function postLikeAsAuthenticatedUser(array $like)
     {
-        return $this->post($this->postLikeEndpoint, $like);
+        return $this->actingAs($this->likedUser)->post($this->postLikeEndpoint, $like);
     }
 }
