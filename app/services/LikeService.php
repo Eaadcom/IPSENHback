@@ -12,42 +12,39 @@ class LikeService
     public function create(array $data)
     {
         $like = new Like;
-        $like->fill($data);
-
+        $like->user()
+            ->associate(auth()->user())
+            ->fill($data);
         $like->save();
     }
 
     public function assignMatchId(array $data, int $id)
     {
-        Like::where('user_id', '=', $data['user_id_of_liked_user'])
-            ->where('user_id_of_liked_user', '=', $data['user_id'])
+        Like::where('user_id', $data['user_id_of_liked_user'])
+            ->where('user_id_of_liked_user', auth()->id())
             ->update(['like_match_id' => $id]);
     }
 
-    public function checkIfThereIsAMatch(array $users)
+    public function checkIfThereIsAMatch(int $userIdOfLikedUser)
     {
-        //TODO auth()->id() gebruiken ipv. user_id
-        $like = Like::where('user_id', '=', $users[1])
-                ->where('user_id_of_liked_user', '=', $users[0])
-                ->get()[0];
+        $like = Like::where('user_id', auth()->id())
+            ->where('user_id_of_liked_user', $userIdOfLikedUser)
+            ->first();
 
         return $like["type"] == 'like' && $like["liked_back_type"] == 'like';
     }
 
-    public function checkIfLikeExists(array $data): bool
+    public function checkIfLikeExists(int $userIdOfLikedUser): bool
     {
-        //TODO != '[]' weghalen
-        //TODO auth()->id() gebruiken ipv. user_id
-        return (Like::where('user_id', '=', $data['user_id_of_liked_user'])
-            ->where('user_id_of_liked_user', '=', $data['user_id'])
-            ->get()) != '[]';
+        return Like::query()->where('user_id', $userIdOfLikedUser)
+            ->where('user_id_of_liked_user', auth()->id())
+            ->exists();
     }
 
     public function returnLike(array $data)
     {
-        //TODO auth()->id() gebruiken ipv. user_id
-        Like::where('user_id', '=', $data['user_id_of_liked_user'])
-            ->where('user_id_of_liked_user', '=', $data['user_id'])
+        Like::where('user_id', $data['user_id_of_liked_user'])
+            ->where('user_id_of_liked_user', auth()->id())
             ->update(['liked_back_type' => $data['type']]);
     }
 }

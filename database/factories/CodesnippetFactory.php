@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Model;
 use App\Models\Codesnippet;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;

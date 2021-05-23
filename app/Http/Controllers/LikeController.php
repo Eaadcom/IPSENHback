@@ -35,16 +35,13 @@ class LikeController extends Controller
             'type' => 'required',
         ]);
 
-        if (
-            $this->likeService->checkIfLikeExists($request->all()))
-        {
+        $userIdOfLikedUser = $request->get('user_id_of_liked_user');
+        if ($this->likeService->checkIfLikeExists($userIdOfLikedUser)) {
             $this->likeService->returnLike($request->all());
 
             //TODO auth()->id() gebruiken ipv. user_id
-            if ($this->likeService->checkIfThereIsAMatch(
-                [$request['user_id'], $request['user_id_of_liked_user']])
-            )
-            {
+            if ($this->likeService->checkIfThereIsAMatch($userIdOfLikedUser)
+            ) {
                 $matchId = $this->likeMatchService->create();
                 $this->likeService->assignMatchId($request->all(), $matchId);
             }

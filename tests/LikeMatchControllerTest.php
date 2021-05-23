@@ -39,17 +39,17 @@ class LikeMatchControllerTest extends TestCase
 
     public function test_api_delete_match_returns_200(){
         $existingId = $this->like->likeMatch->id;
-        $this->deleteById($existingId)->assertResponseOk();
+        $this->deleteByIdAsAuthenticatedUser($existingId)->assertResponseOk();
     }
 
     public function test_api_delete_match_returns_404(){
         $nonExistingId = rand();
-        $this->deleteById($nonExistingId)->assertResponseStatus(404);
+        $this->deleteByIdAsAuthenticatedUser($nonExistingId)->assertResponseStatus(404);
     }
 
-    private function deleteById($id)
+    private function deleteByIdAsAuthenticatedUser($id)
     {
-        return $this->delete($this->deleteByIdEndpoint . $id);
+        return $this->actingAs($this->like->user)->delete($this->deleteByIdEndpoint . $id);
     }
 
     private function getById($id)
