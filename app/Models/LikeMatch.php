@@ -9,9 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Match extends Model
+class LikeMatch extends Model
 {
     use SoftDeletes, HasFactory;
+
+    protected $fillable = [
+        'deleted_at'
+    ];
+
+    protected $with = [
+        'messages',
+    ];
 
     public function like(): HasOne
     {

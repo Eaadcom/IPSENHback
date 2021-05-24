@@ -1,0 +1,37 @@
+<?php
+
+
+namespace App\services;
+
+
+use App\Events\MessageCreated;
+use App\Models\LikeMatch;
+use App\Models\Message;
+
+class MessageService
+{
+    public function create(array $data)
+    {
+        $likeMatch = LikeMatch::query()->where('id', $data['like_match_id'])->first();
+
+        $message = $this->save(
+            new Message,
+            $likeMatch,
+            $data
+        );
+
+        event(new MessageCreated($message));
+    }
+
+    public function save(Message $message, LikeMatch $likeMatch, array $data): Message
+    {
+        $message->fill($data);
+
+        $message->likeMatch()->associate($likeMatch);
+        $message->sender()->associate(auth()->user());
+
+        $message->save();
+
+        return $message;
+    }
+}

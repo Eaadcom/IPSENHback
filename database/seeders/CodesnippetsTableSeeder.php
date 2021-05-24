@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Codesnippet;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class CodesnippetsTableSeeder extends Seeder
@@ -14,6 +15,12 @@ class CodesnippetsTableSeeder extends Seeder
      */
     public function run()
     {
-        Codesnippet::factory()->create();
+        User::all()->each(function ($user) {
+
+            Codesnippet::factory()->create([
+                'user_id' => $user->id
+            ]);
+
+        });
     }
 }

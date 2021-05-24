@@ -1,6 +1,6 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -13,22 +13,39 @@
 |
 */
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+use Laravel\Lumen\Routing\Router;
 
-    $router->group(['prefix' => 'v1'], function () use ($router) {
+$router->group(['prefix' => 'auth'], function ($router) {
 
-        // api/v1/users
-        $router->get('/user', 'UserController@get');
-        $router->post('/user', 'UserController@post');
-        $router->put('/user/{id}', 'UserController@put');
-        $router->delete('/user/{id}', 'UserController@delete');
+    // auth/login
+    $router->post('login', 'AuthController@login');
 
-        // api/v1/codesnippets
-        $router->get('/codesnippet/{userId}', 'CodesnippetController@getByUserId');
-        $router->get('/codesnippet', 'CodesnippetController@getByAuthId');
-        $router->post('/codesnippet', 'CodesnippetController@post');
-        $router->put('/codesnippet/{id}', 'CodesnippetController@put');
-        $router->delete('/codesnippet/{id}', 'CodesnippetController@delete');
+    // auth/register
+    $router->post('register', 'AuthController@register');
 
-    });
+
+});
+
+// protected routes
+$router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router) {
+    // api/v1/messages
+    $router->post('message', 'MessageController@post');
+
+    // api/v1/likeMatches
+    $router->get('likematch', 'LikeMatchController@getAll');
+    $router->get('likematch/{id}', 'LikeMatchController@get');
+    $router->delete('likematch/{id}', 'likeMatchController@delete');
+
+    // api/v1/like
+    $router->post('like', 'LikeController@post');
+
+    // api/v1/user
+    $router->get('user/potentialmatches/{id}', 'UserController@getPotentialMatches');
+
+    // api/v1/codesnippets
+    $router->get('codesnippet/{userId}', 'CodesnippetController@getByUserId');
+    $router->get('codesnippet', 'CodesnippetController@getByAuthId');
+    $router->post('codesnippet', 'CodesnippetController@post');
+    $router->put('codesnippet/{id}', 'CodesnippetController@put');
+    $router->delete('codesnippet/{id}', 'CodesnippetController@delete');
 });

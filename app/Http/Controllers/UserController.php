@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -17,7 +18,6 @@ class UserController extends Controller
     {
         $this->userService = $userService;
     }
-
 
     public function get(Request $request)
     {
@@ -60,12 +60,19 @@ class UserController extends Controller
             'interest' => 'required',
         ]);
 
-        $this->userService->update(User::find($id), $request->all());
+        $this->userService->update(User::wherefind($id), $request->all());
     }
 
     public function delete(Request $request, $id)
     {
         $this->userService->delete($id);
+    }
+
+    public function getPotentialMatches($id): array
+    {
+
+        return $this->userService->getPotentialMatches($id);
+
     }
 
 }

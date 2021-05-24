@@ -9,6 +9,7 @@ services:
       APP_DEBUG: '${APP_DEBUG}'
       APP_URL: '${APP_URL}'
       DB_HOST: 'mysql'
+      REDIS_HOST: 'redis'
     volumes:
       - '.:/var/www/html/'
     ports:
@@ -28,3 +29,8 @@ services:
       MYSQL_PASSWORD: '${DB_PASSWORD}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
 
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
