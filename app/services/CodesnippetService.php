@@ -10,23 +10,34 @@ use App\Models\User;
 class CodesnippetService
 {
 
-
-    public function createOrUpdate(Codesnippet $codesnippet, array $data)
+    public function update($id, array $data)
     {
-        $codesnippet->fill($data);
-
-        $user = User::find(/*auth()->id()*/2);
-
-        $user->codesnippets()->save($codesnippet);
+        $codesnippet = $this->getAuthUserCodesnippet($id);
+        $this->save($codesnippet, $data);
+    }
+    public function create(array $data){
+        $this->save(new Codesnippet, $data);
     }
 
-    public function delete($codesnippet)
+    private function save(Codesnippet $codesnippet, array $data){
+        $codesnippet->fill($data);
+        $codesnippet->user()->associate(auth()->user());
+        $codesnippet->save();
+    }
+
+    public function delete($id)
     {
-        $codesnippet->delete();
+        $this->getAuthUserCodesnippet($id)->delete();
     }
 
     public function getByUserId($id)
     {
-        return User::find($id)->codesnippets;
+        return User::findOrFail($id)->codesnippets;
+    }
+
+    public function getAuthUserCodesnippet(int $codesnippetId) {
+        $user = auth()->user();
+
+        return $user->codesnippets()->findOrFail($codesnippetId);
     }
 }

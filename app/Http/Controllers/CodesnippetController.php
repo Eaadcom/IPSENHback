@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Codesnippet;
-use App\Models\User;
 use App\services\CodesnippetService;
+use Exception;
 use Illuminate\Http\Request;
 
 class CodesnippetController extends Controller
@@ -19,49 +18,82 @@ class CodesnippetController extends Controller
         $this->codesnippetService = $codesnippetService;
     }
 
-
-    public function getByUserId($id)
+    public function getByUserId($userId)
     {
-        return $this->codesnippetService->getByUserId($id);
+        try {
+            $codesnippets = $this->codesnippetService->getByUserId($userId);
+            $response = response()->json([
+                'message' => 'codesnippet succesfully collected by user ID.',
+                'codesnippets' => $codesnippets
+            ]);
+        }
+        catch (Exception $exception) {
+            $response = response()->json(['message' => 'Could not collect codesnippets by user ID.']);
+        }
+        return $response;
     }
+
+    public function getByAuthId()
+    {
+        $userId = auth()->id();
+        try {
+            $codesnippets = $this->codesnippetService->getByUserId($userId);
+            $response = response()->json([
+                'message' => 'codesnippet succesfully collected by auth ID.',
+                'codesnippets' => $codesnippets
+            ]);
+        }
+        catch (Exception $exception) {
+            $response = response()->json(['message' => 'Could not collect codesnippets by auth ID.']);
+        }
+        return $response;
+    }
+
 
     public function post(Request $request)
     {
-
         $this->validate($request, [
             'content' => 'required',
             'language' => 'required',
             'theme' => 'required',
         ]);
-
-        $this->codesnippetService->createOrUpdate(new Codesnippet, $request->all());
-
+        try {
+            $this->codesnippetService->create($request->all());
+            $response = response()->json(['message' => 'Codesnippet succesfully created.']);
+        }
+        catch (Exception $exception) {
+            $response = response()->json(['message' => 'Could not create codesnippet.']);
+        }
+        return $response;
     }
 
     public function put(Request $request, $id)
     {
-
         $this->validate($request, [
             'content' => 'required',
             'language' => 'required',
             'theme' => 'required',
         ]);
-
-        $codesnippet = $this->getAuthUserCodesnippet($id);
-
-        $this->codesnippetService->createOrUpdate($codesnippet, $request->all());
+        try {
+            $this->codesnippetService->update($id, $request->all());
+            $response = response()->json(['message' => 'Codesnippet succesfully updated.']);
+        }
+        catch (Exception $exception) {
+            $response = response()->json(['message' => 'Could not update codesnippet.']);
+        }
+        return $response;
     }
 
     public function delete($id)
     {
-        $codesnippet = $this->getAuthUserCodesnippet($id);
-        $this->codesnippetService->delete($codesnippet);
-    }
-
-    private function getAuthUserCodesnippet(int $codesnippetId) {
-        $user = User::find(/*auth()->id()*/2);
-
-        return $user->codesnippets()->find($codesnippetId);
+        try {
+            $this->codesnippetService->delete($id);
+            $response = response()->json(['message' => 'Codesnippet succesfully deleted.']);
+        }
+        catch(Exception $exception) {
+            $response = response()->json(['message' => 'Could not delete codesnippet.']);
+        }
+        return $response;
     }
 
 }
