@@ -22,10 +22,7 @@ class CodesnippetController extends Controller
     {
         try {
             $codesnippets = $this->codesnippetService->getByUserId($userId);
-            $response = response()->json([
-                'message' => 'codesnippet succesfully collected by user ID.',
-                'codesnippets' => $codesnippets
-            ]);
+            $response = response()->json($codesnippets);
         }
         catch (Exception $exception) {
             $response = response()->json(['message' => 'Could not collect codesnippets by user ID.']);
@@ -38,10 +35,7 @@ class CodesnippetController extends Controller
         $userId = auth()->id();
         try {
             $codesnippets = $this->codesnippetService->getByUserId($userId);
-            $response = response()->json([
-                'message' => 'codesnippet succesfully collected by auth ID.',
-                'codesnippets' => $codesnippets
-            ]);
+            $response = response()->json($codesnippets);
         }
         catch (Exception $exception) {
             $response = response()->json(['message' => 'Could not collect codesnippets by auth ID.']);
