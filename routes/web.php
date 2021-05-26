@@ -28,13 +28,12 @@ $router->group(['prefix' => 'api/auth'], function ($router) {
 
 // protected routes
 $router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router) {
-    // api/v1/messages
-    $router->post('message', 'MessageController@post');
 
-    // api/v1/likeMatches
-    $router->get('likematch', 'LikeMatchController@getAll');
-    $router->get('likematch/{id}', 'LikeMatchController@get');
-    $router->delete('likematch/{id}', 'likeMatchController@delete');
+    // api/v1/like-matches
+    $router->get('like-match', 'LikeMatchController@getAll');
+    $router->get('like-match/{id}', 'LikeMatchController@get');
+    $router->delete('like-match/{id}', 'likeMatchController@delete');
+    $router->post('like-match/{id}/message', 'MessageController@post');
 
     // api/v1/like
     $router->post('like', 'LikeController@post');
