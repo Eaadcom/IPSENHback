@@ -41,4 +41,11 @@ $router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router
 
     // api/v1/user
     $router->get('user/potentialmatches/{id}', 'UserController@getPotentialMatches');
+
+    // api/v1/codesnippets
+    $router->get('codesnippet/{userId}', 'CodesnippetController@getByUserId');
+    $router->get('codesnippet', 'CodesnippetController@getByAuthId');
+    $router->post('codesnippet', 'CodesnippetController@post');
+    $router->put('codesnippet/{id}', 'CodesnippetController@put');
+    $router->delete('codesnippet/{id}', 'CodesnippetController@delete');
 });
