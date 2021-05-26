@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Like;
-use App\Models\User;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 
 class LikeMatchControllerTest extends TestCase
