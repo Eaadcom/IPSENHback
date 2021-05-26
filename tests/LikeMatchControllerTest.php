@@ -10,8 +10,8 @@ class LikeMatchControllerTest extends TestCase
 
     private $likeMatchId;
     private $likeUser;
-    private $getByIdEndpoint = '/api/v1/likematch/';
-    private $getAllEndpoint = '/api/v1/likematch';
+    private $getByIdEndpoint = '/api/v1/like-match/';
+    private $getAllEndpoint = '/api/v1/like-match';
 
     protected function setUp(): void
     {

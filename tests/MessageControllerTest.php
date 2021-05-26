@@ -9,18 +9,20 @@ class MessageControllerTest extends TestCase
     use DatabaseMigrations;
 
     private $message;
-    private $postEndpoint = '/api/v1/message';
-
+    private $postEndpoint = '/api/v1/like-match/';
     protected function setUp(): void
     {
         parent::setUp();
 
         $like = Like::factory()->create();
+        $likeMatchid = $like->likeMatch->id;
 
         $this->message = Message::factory()->make([
-            'like_match_id' => $like->likeMatch->id,
+            'like_match_id' => $likeMatchid,
             'sender_id' => $like->user->id
         ]);
+
+        $this->postEndpoint = $this->postEndpoint . $likeMatchid . 'message';
     }
 
     public function test_api_post_message_returns_status_200_when_authenticated()
