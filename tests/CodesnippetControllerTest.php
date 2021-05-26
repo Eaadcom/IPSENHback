@@ -26,7 +26,7 @@ class CodesnippetControllerTest extends TestCase
         ]);
     }
 
-    public function test_not_authenticated_user_cannot_create_message()
+    public function todo_test_not_authenticated_user_cannot_create_message()
     {
         // ...
     }

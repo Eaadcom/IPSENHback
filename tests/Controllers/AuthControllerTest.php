@@ -170,15 +170,15 @@ class  AuthControllerTest extends TestCase
     private function post_auth_login(array $data, User $authUser = null)
     {
         return !is_null($authUser)
-            ? $this->actingAs($authUser)->post('auth/login', $data)
-            : $this->post('auth/login', $data);
+            ? $this->actingAs($authUser)->post('api/auth/login', $data)
+            : $this->post('api/auth/login', $data);
     }
 
     private function post_auth_register(array $data, User $authUser = null)
     {
         return !is_null($authUser)
-            ? $this->actingAs($authUser)->post('auth/register', $data)
-            : $this->post('auth/register', $data);
+            ? $this->actingAs($authUser)->post('api/auth/register', $data)
+            : $this->post('api/auth/register', $data);
     }
 
 }

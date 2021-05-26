@@ -16,19 +16,19 @@ class LikeMatchService
         return LikeMatch::factory()->create()->id;
     }
 
-    public function update(LikeMatch $likematch, array $data)
+    public function update(LikeMatch $likeMatch, array $data)
     {
         $this->save(
-            $likematch,
+            $likeMatch,
             $data
         );
     }
 
-    public function save(LikeMatch $likematch, array $data)
+    public function save(LikeMatch $likeMatch, array $data)
     {
-        $likematch->fill($data);
+        $likeMatch->fill($data);
 
-        $likematch->save();
+        $likeMatch->save();
     }
 
     public function delete($id)
