@@ -15,7 +15,7 @@
 
 use Laravel\Lumen\Routing\Router;
 
-$router->group(['prefix' => 'auth'], function ($router) {
+$router->group(['prefix' => 'api/auth'], function ($router) {
 
     // auth/login
     $router->post('login', 'AuthController@login');
