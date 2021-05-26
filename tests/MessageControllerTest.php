@@ -22,7 +22,7 @@ class MessageControllerTest extends TestCase
             'sender_id' => $like->user->id
         ]);
 
-        $this->postEndpoint = $this->postEndpoint . $likeMatchid . 'message';
+        $this->postEndpoint .= $likeMatchid . '/message';
     }
 
     public function test_api_post_message_returns_status_200_when_authenticated()
