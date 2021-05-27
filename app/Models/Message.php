@@ -14,6 +14,10 @@ class Message extends Model
         'content'
     ];
 
+    protected $with = [
+        'sender'
+    ];
+
     public function likeMatch(): BelongsTo
     {
         return $this->belongsTo(LikeMatch::class);
