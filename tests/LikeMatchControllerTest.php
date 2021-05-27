@@ -29,9 +29,14 @@ class LikeMatchControllerTest extends TestCase
     public function test_api_get_match_returns_json_with_messages_when_authenticated_with_existing_id()
     {
         $this->getByIdAsAuthenticatedUser($this->likeMatchId)->seeJsonStructure([
-            'message' => [
-                'messages'
-                ]
+            'messages'
+        ]);
+    }
+
+    public function test_api_get_match_returns_json_with_matched_user_when_authenticated_with_existing_id()
+    {
+        $this->getByIdAsAuthenticatedUser($this->likeMatchId)->seeJsonStructure([
+            'matched_user'
         ]);
     }
 
@@ -53,9 +58,7 @@ class LikeMatchControllerTest extends TestCase
     {
         $nonExistingId = rand();
         $this->getByIdAsAuthenticatedUser($nonExistingId)->seeJsonDoesntContains([
-            'message' => [
-                'messages'
-            ]
+            'messages'
         ]);
     }
 
@@ -68,6 +71,14 @@ class LikeMatchControllerTest extends TestCase
     {
         $this->get($this->getByIdEndpoint . $this->likeMatchId)->seeJsonEquals([
             'message' => 'Unauthorized'
+        ]);
+    }
+
+    public function test_api_get_match_returns_json_with_without_data_when_not_authenticated()
+    {
+        $this->get($this->getByIdEndpoint . $this->likeMatchId)->dontSeeJson([
+            'messages',
+            'matched_user'
         ]);
     }
 

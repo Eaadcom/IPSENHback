@@ -21,19 +21,19 @@ class LikeMatchController extends Controller
 
     public function delete($id): JsonResponse
     {
-        $response = $this->likeMatchService->delete($id);
-        return response()->json(['message' => $response]);
+        $result = $this->likeMatchService->delete($id);
+        return response()->json(['message' => $result]);
     }
 
     public function get($id): JsonResponse
     {
-        $response = $this->likeMatchService->getById($id);
-        return response()->json(['message' => $response]);
+        $result = $this->likeMatchService->getById($id);
+        return response()->json($result);
     }
 
     public function getAll(): JsonResponse
     {
-        $response = $this->likeMatchService->getAllLikeMatchesOfAuthUser();
-        return response()->json(['message' => $response]);
+        $result = $this->likeMatchService->getAllLikeMatchesOfAuthUser();
+        return response()->json($result);
     }
 }
