@@ -1,5 +1,7 @@
 FROM php:8-apache
 
+ENV APP_ENV=$APP_ENV
+
 RUN apt-get update && \
     pecl install redis && \
     docker-php-ext-install pdo_mysql pcntl posix&& \
@@ -22,3 +24,5 @@ stdout_logfile=/var/www/html/storage/logs/laravel-worker.log \n\
 startsecs=0" >> /etc/supervisor/supervisord.conf
 
 COPY . .
+
+CMD ./deploy.sh
