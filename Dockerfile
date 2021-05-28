@@ -11,9 +11,9 @@ RUN apt-get update && \
     apt-get install supervisor -y && \
     apt autoremove -y
 
-COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY . .
 
-RUN chmod 777 ./deploy.sh
+RUN cat ./supervisord.conf >> /etc/supervisor/supervisord.conf && \
+    chmod 777 ./deploy.sh
 
 CMD ./deploy.sh
