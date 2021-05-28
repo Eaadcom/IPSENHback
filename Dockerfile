@@ -10,11 +10,11 @@ RUN apt-get update && \
     service apache2 restart && \
     apt-get install supervisor -y && \
     apt autoremove -y && \
-    # setup deploy.sh
-    touch deploy.sh && \
-    chmod +x deploy.sh
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY deploy.sh .
+RUN chmod +x deploy.sh
+
 COPY . .
 
 CMD ./deploy.sh
