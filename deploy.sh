@@ -11,6 +11,7 @@ else
 fi;
 
 # start supervisor
+cp ./lumen_worker.conf /etc/supervisor/conf.d/lumen_worker.conf
 supervisord -c /etc/supervisor/supervisord.conf
 
 # check supervisor status

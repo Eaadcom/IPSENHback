@@ -13,7 +13,6 @@ RUN apt-get update && \
 
 COPY . .
 
-RUN cat ./supervisord.conf >> /etc/supervisor/supervisord.conf && \
-    chmod 777 ./deploy.sh
+RUN chmod 777 ./deploy.sh
 
 CMD ./deploy.sh
