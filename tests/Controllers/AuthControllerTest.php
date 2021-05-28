@@ -21,7 +21,7 @@ class  AuthControllerTest extends TestCase
         // uses default password: secret
         $user = User::factory()->create();
 
-        $credentials = ['email' => $user->email, 'password' => 'secret'];
+        $credentials = ['email' => $user->email, 'password' => 'Wachtwoord'];
 
         $this->post_auth_login($credentials)->assertResponseOk();
 
@@ -42,7 +42,7 @@ class  AuthControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $credentials = ['email' => $user->email, 'password' => 'secret'];
+        $credentials = ['email' => $user->email, 'password' => 'Wachtwoord'];
 
         $this->post_auth_login($credentials)->seeJsonStructure([
             'api_token',

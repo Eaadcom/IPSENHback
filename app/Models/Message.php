@@ -18,6 +18,10 @@ class Message extends Model
         'sender'
     ];
 
+    protected $appends = [
+        'is_sender'
+    ];
+
     protected $hidden = [
         'sender_id'
     ];
@@ -30,5 +34,10 @@ class Message extends Model
     public function sender(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sender_id');
+    }
+
+    public function getIsSenderAttribute(): bool
+    {
+        return auth()->id() == $this->sender_id;
     }
 }
