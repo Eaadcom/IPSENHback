@@ -9,12 +9,11 @@ RUN apt-get update && \
     a2enmod rewrite && \
     service apache2 restart && \
     apt-get install supervisor -y && \
-    apt autoremove -y && \
+    apt autoremove -y
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY deploy.sh .
-RUN chmod +x deploy.sh
-
 COPY . .
+
+RUN chmod 777 ./deploy.sh
 
 CMD ./deploy.sh
