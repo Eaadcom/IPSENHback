@@ -10,19 +10,11 @@ RUN apt-get update && \
     service apache2 restart && \
     apt-get install supervisor -y && \
     apt autoremove -y && \
-    # supervisord configuration
-    echo "\n\
-[program:lumen] \n\
-process_name=%(program_name)s_%(process_num)02d \n\
-command=php artisan queue:work --sleep=3 --tries=3 \n\
-directory=/var/www/html \n\
-autostart=true \n\
-autorestart=true \n\
-numprocs=1 \n\
-redirect_stderr=true \n\
-stdout_logfile=/var/www/html/storage/logs/laravel-worker.log \n\
-startsecs=0" >> /etc/supervisor/supervisord.conf
+    # setup deploy.sh
+    touch deploy.sh && \
+    chmod +x deploy.sh
 
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY . .
 
 CMD ./deploy.sh
