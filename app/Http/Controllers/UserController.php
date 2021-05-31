@@ -74,5 +74,4 @@ class UserController extends Controller
         return $this->userService->getPotentialMatches($id);
 
     }
-
 }

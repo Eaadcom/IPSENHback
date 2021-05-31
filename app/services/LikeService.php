@@ -4,8 +4,6 @@ namespace App\services;
 
 
 use App\Models\Like;
-use Illuminate\Support\Facades\DB;
-use phpDocumentor\Reflection\Types\Boolean;
 
 class LikeService
 {
@@ -30,6 +28,12 @@ class LikeService
         $like = Like::where('user_id', auth()->id())
             ->where('user_id_of_liked_user', $userIdOfLikedUser)
             ->first();
+
+        if ($like == null){
+            $like = Like::where('user_id_of_liked_user', auth()->id())
+                ->where('user_id', $userIdOfLikedUser)
+                ->first();
+        }
 
         return $like["type"] == 'like' && $like["liked_back_type"] == 'like';
     }
