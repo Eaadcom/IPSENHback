@@ -43,7 +43,9 @@ class MessageControllerTest extends TestCase
 
     public function test_api_post_message_returns_json_when_authenticated()
     {
-        $this->postAsAuthenticated()->seeJsonEquals([
+        $response = $this->postAsAuthenticated();
+        dump($response->response->getContent());
+        $response->seeJsonEquals([
             'message' => 'Successfully created the message.'
         ]);
     }
