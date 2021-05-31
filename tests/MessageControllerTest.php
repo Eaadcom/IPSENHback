@@ -2,6 +2,7 @@
 
 use App\Models\Like;
 use App\Models\Message;
+use Illuminate\Queue\Queue;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 
 class MessageControllerTest extends TestCase
@@ -43,8 +44,7 @@ class MessageControllerTest extends TestCase
 
     public function test_api_post_message_returns_json_when_authenticated()
     {
-        $response = $this->postAsAuthenticated();
-        $response->seeJsonEquals([
+        $this->postAsAuthenticated()->seeJsonEquals([
             'message' => 'Successfully created the message.'
         ]);
     }
@@ -73,7 +73,6 @@ class MessageControllerTest extends TestCase
     }
 
     private function postAsAuthenticated() {
-        dump($this->message->toArray());
         return $this->actingAs($this->message->sender)->post($this->postEndpoint, $this->message->toArray());
     }
 
