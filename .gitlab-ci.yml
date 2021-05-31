@@ -13,8 +13,9 @@ test:phpunit:
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
   artifacts:
     paths:
-      - ./storage/logs/
-    expire_in: 1 hrs
+      - ./storage/logs # for debugging
+    expire_in: 1 days
+    when: on_failure
 
 test:behat:
   stage: testing
