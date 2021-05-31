@@ -9,16 +9,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class MessageCreated extends Event implements ShouldBroadcast
 {
-    public $message;
+    public $content;
+    public $like_match_id;
+    public $is_sender;
+    public $created_at;
 
-    public function __construct(Message $message)
+    public function __construct(Message $message, LikeMatch $likeMatch)
     {
-        $this->message = $message;
+        $this->content = $message->content;
+        $this->like_match_id = $likeMatch->id;
+        $this->is_sender = auth()->id() == $message->sender_id;
+        $this->created_at = $message->created_at;
     }
 
-    public function broadcastOn(): PrivateChannel
+    public function broadcastOn(): Channel
     {
-        return new PrivateChannel('messages.'.$this->message->like_match_id);
+        return new Channel("messages.{$this->like_match_id}");
     }
 
     public function broadcastAs(): string
