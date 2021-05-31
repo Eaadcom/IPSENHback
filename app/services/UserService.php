@@ -26,6 +26,11 @@ class UserService
         );
     }
 
+    public function get($id){
+        return User::where('id', '=', $id)
+            ->get();
+    }
+
     public function save(User $user, array $data)
     {
         $user->fill($data);

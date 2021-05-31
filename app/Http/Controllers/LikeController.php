@@ -39,7 +39,6 @@ class LikeController extends Controller
         if ($this->likeService->checkIfLikeExists($userIdOfLikedUser)) {
             $this->likeService->returnLike($request->all());
 
-            //TODO auth()->id() gebruiken ipv. user_id
             if ($this->likeService->checkIfThereIsAMatch($userIdOfLikedUser)
             ) {
                 $matchId = $this->likeMatchService->create();
