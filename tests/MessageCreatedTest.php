@@ -10,6 +10,7 @@ class MessageCreatedTest extends TestCase
     use DatabaseMigrations;
 
     private $message;
+    private $likeMatch;
 
     protected function setUp(): void
     {
@@ -17,6 +18,7 @@ class MessageCreatedTest extends TestCase
 
         $content = 'Dit is een test bericht';
         $like = Like::factory()->create();
+        $this->likeMatch = $like->likeMatch;
         $this->message = Message::factory()->create([
             'like_match_id' => $like->likeMatch->id,
             'sender_id' => $like->user->id,
@@ -28,6 +30,6 @@ class MessageCreatedTest extends TestCase
     {
         $this->expectsEvents(MessageCreated::class);
 
-        event(new MessageCreated($this->message));
+        event(new MessageCreated($this->message, $this->likeMatch));
     }
 }
