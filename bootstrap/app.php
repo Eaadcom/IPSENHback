@@ -59,6 +59,8 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('queue');
+$app->configure('broadcasting');
 
 /*
 |--------------------------------------------------------------------------

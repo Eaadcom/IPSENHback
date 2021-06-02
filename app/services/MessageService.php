@@ -12,6 +12,7 @@ class MessageService
 {
     public function create(array $data)
     {
+        /** @var LikeMatch $likeMatch */
         $likeMatch = LikeMatch::query()->where('id', $data['like_match_id'])->first();
 
         $message = $this->save(
@@ -20,7 +21,7 @@ class MessageService
             $data
         );
 
-        event(new MessageCreated($message));
+        broadcast(new MessageCreated($message, $likeMatch));
     }
 
     public function save(Message $message, LikeMatch $likeMatch, array $data): Message

@@ -11,6 +11,11 @@ test:phpunit:
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
+  artifacts:
+    paths:
+      - ./storage/logs # for debugging
+    expire_in: 1 hrs
+    when: on_failure
 
 test:behat:
   stage: testing
