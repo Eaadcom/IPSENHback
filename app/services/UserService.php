@@ -27,8 +27,7 @@ class UserService
     }
 
     public function get($id){
-        return User::where('id', '=', $id)
-            ->get();
+        return User::query()->findOrFail($id);
     }
 
     public function save(User $user, array $data)

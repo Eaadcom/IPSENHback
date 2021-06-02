@@ -44,13 +44,13 @@ class UserControllerTest extends TestCase
     }
 
     public function test_api_get_returns_200(){
-        $requestedUserid = $this->userThatIsPotentialMatch->id;
+        $requestedUserid = $this->userThatIsRequesting->id;
         $this->getUser($requestedUserid)->assertResponseOk();
     }
 
     public function test_api_get_returns_404(){
         $faultyRequestedUserId = rand();
-        $this->getUser($faultyRequestedUserId)->assertResponseOk();
+        $this->getUser($faultyRequestedUserId)->assertResponseStatus(404);
     }
 
     private function getUser(int $id){
