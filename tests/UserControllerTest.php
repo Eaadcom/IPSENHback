@@ -11,6 +11,7 @@ class UserControllerTest extends TestCase
     private $userThatIsRequesting;
     private $userThatIsPotentialMatch;
     private $getPotentialMatchesEndpoint = '/api/v1/user/potentialmatches/';
+    private $getUserEndpoint = '/api/v1/user/';
 
     protected function setUp(): void
     {
@@ -40,6 +41,20 @@ class UserControllerTest extends TestCase
     public function test_api_get_potential_matches_returns_404(){
         $faultyRequestingUserId = rand();
         $this->getPotentialMatches($faultyRequestingUserId)->assertResponseStatus(404);
+    }
+
+    public function test_api_get_returns_200(){
+        $requestedUserid = $this->userThatIsRequesting->id;
+        $this->getUser($requestedUserid)->assertResponseOk();
+    }
+
+    public function test_api_get_returns_404(){
+        $faultyRequestedUserId = rand();
+        $this->getUser($faultyRequestedUserId)->assertResponseStatus(404);
+    }
+
+    private function getUser(int $id){
+        return $this->actingAs($this->userThatIsRequesting)->get($this->getUserEndpoint . $id);
     }
 
     private function getPotentialMatches(int $id)

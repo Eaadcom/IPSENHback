@@ -19,9 +19,9 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function get(Request $request)
+    public function get($id)
     {
-        return User::first();
+        return $this->userService->get($id);
     }
 
     public function post(Request $request)
@@ -74,5 +74,4 @@ class UserController extends Controller
         return $this->userService->getPotentialMatches($id);
 
     }
-
 }
