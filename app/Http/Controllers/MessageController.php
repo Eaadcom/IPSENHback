@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\services\MessageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,7 +22,9 @@ class MessageController extends Controller
 
     public function post(Request $request): JsonResponse
     {
-     $this->validate($request, [
+        $message = $this->messageService->broadcast($request);
+
+        $this->validate($request, [
             'content' => [
                 'required'
             ],
@@ -38,7 +39,7 @@ class MessageController extends Controller
             ],
         ]);
 
-        $this->messageService->create($request->all());
+        $this->messageService->create($message);
 
         return response()->json(['message' => 'Successfully created the message.']);
     }

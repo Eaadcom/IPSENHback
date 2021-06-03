@@ -7,32 +7,41 @@ namespace App\services;
 use App\Events\MessageCreated;
 use App\Models\LikeMatch;
 use App\Models\Message;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MessageService
 {
-    public function create(array $data)
+    public function create(Message $message)
     {
         /** @var LikeMatch $likeMatch */
-        $likeMatch = LikeMatch::query()->where('id', $data['like_match_id'])->first();
+        $likeMatch = LikeMatch::query()->where('id', $message->like_match_id)->firstOrFail();
 
-        $message = $this->save(
-            new Message,
-            $likeMatch,
-            $data
+        $this->save(
+            $message,
+            $likeMatch
         );
-
-        broadcast(new MessageCreated($message, $likeMatch));
     }
 
-    public function save(Message $message, LikeMatch $likeMatch, array $data): Message
+    public function broadcast(Request $request): Message
     {
-        $message->fill($data);
+        $message = new Message([
+            'content' => $request->get('content'),
+            'sender_id' => $request->get('sender_id'),
+            'like_match_id' => $request->get('like_match_id'),
+            'created_at' => Carbon::now()
+        ]);
 
+        broadcast(new MessageCreated($message));
+
+        return $message;
+    }
+
+    public function save(Message $message, LikeMatch $likeMatch): void
+    {
         $message->likeMatch()->associate($likeMatch);
         $message->sender()->associate(auth()->user());
 
         $message->save();
-
-        return $message;
     }
 }
