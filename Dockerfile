@@ -14,5 +14,5 @@ RUN apt-get update && \
 COPY . .
 
 RUN chmod 777 ./deploy.sh
-
+WORKDIR /var/www/html
 CMD ./deploy.sh

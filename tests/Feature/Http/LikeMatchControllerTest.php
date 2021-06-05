@@ -1,7 +1,10 @@
 <?php
 
+namespace Tests\Feature\Http;
+
 use App\Models\Like;
 use Laravel\Lumen\Testing\DatabaseMigrations;
+use Tests\TestCase;
 
 class LikeMatchControllerTest extends TestCase
 {
@@ -9,6 +12,8 @@ class LikeMatchControllerTest extends TestCase
 
     private $likeMatchId;
     private $likeUser;
+    // TODO: maak gebruik van route('naam.van.route')
+    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
     private $getByIdEndpoint = '/api/v1/like-match/';
     private $getAllEndpoint = '/api/v1/like-match';
 
@@ -99,7 +104,8 @@ class LikeMatchControllerTest extends TestCase
         ]);
     }
 
-    public function test_api_delete_match_returns_status_200_when_authenticated_with_existing_id(){
+    public function test_api_delete_match_returns_status_200_when_authenticated_with_existing_id()
+    {
         $this->deleteByIdAsAuthenticatedUser($this->likeMatchId)->assertResponseOk();
     }
 
@@ -110,7 +116,8 @@ class LikeMatchControllerTest extends TestCase
         ]);
     }
 
-    public function test_api_delete_match_returns_status_404_when_authenticated_with_non_existing_id(){
+    public function test_api_delete_match_returns_status_404_when_authenticated_with_non_existing_id()
+    {
         $nonExistingId = rand();
         $this->deleteByIdAsAuthenticatedUser($nonExistingId)->assertResponseStatus(404);
     }

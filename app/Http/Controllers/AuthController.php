@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
+use App\Models\User;
 use App\services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\UnauthorizedException;
+
 
 class AuthController extends Controller
 {
@@ -21,49 +26,28 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $this->validate($request, [
-            'email' => 'required|string',
-            'password' => 'required|string',
-        ]);
-        try {
+        $credentials = $request->only(['email', 'password']);
 
-            $credentials = $request->only(['email', 'password']);
-            $user = $this->authService->login($credentials);
-
+        if (auth()->attempt($credentials)) {
             return response()->json([
-                'api_token' => $user->api_token,
-                'user' => $user
+                'token' => auth()->getToken()
             ]);
-
-        } catch (UnauthorizedException $exception) {
-            return response()->json(['message' => 'failed to authenticate user by credentials'], Response::HTTP_UNAUTHORIZED);
         }
-    }
-
-    public function register(Request $request): JsonResponse
-    {
-        $this->validate($request, [
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8',
-            'first_name' => 'required|string|min:3',
-            'middle_name' => 'string|min:3',
-            'last_name' => 'required|string|min:3',
-            'gender' => 'required|string',
-            'date_of_birth' => 'required|date',
-            'about_me' => 'required|string',
-            'age_range_bottom' => 'required|integer',
-            'age_range_top' => 'required|integer',
-            'max_distance' => 'required|integer',
-            'interest' => 'required|string',
-        ]);
-
-        $user = $this->authService->register($request->all());
 
         return response()->json([
-            'user' => $user,
-            'api_token' => $user->api_token
-        ]);
+            'message' => 'Unauthorized'
+        ], Response::HTTP_UNAUTHORIZED);
+    }
+
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $this->authService->register(
+            new User,
+            $request->validated()
+        );
+
+        return response()->json(['message' => 'user created successfully']);
     }
 }

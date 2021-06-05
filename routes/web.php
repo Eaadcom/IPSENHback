@@ -15,16 +15,33 @@
 
 use Laravel\Lumen\Routing\Router;
 
-$router->group(['prefix' => 'api/auth'], function ($router) {
 
-    // auth/login
-    $router->post('login', 'AuthController@login');
+$router->group(['prefix' => 'api'], function (Router $router) {
 
-    // auth/register
-    $router->post('register', 'AuthController@register');
+    $router->group(['prefix' => 'auth'], function (Router $router) {
 
+        $router->post('login', [
+            'as' => 'auth.login',
+            'uses' => 'AuthController@login'
+        ]);
 
+        $router->post('register', [
+            'as' => 'auth.register',
+            'uses' => 'AuthController@register',
+        ]);
+    });
+
+    $router->group(['middleware' => 'auth'], function (Router $router) {
+
+        $router->get('test', function () {
+
+            return auth()->user();
+
+        });
+
+    });
 });
+
 
 // protected routes
 $router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router) {
