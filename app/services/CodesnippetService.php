@@ -15,14 +15,15 @@ class CodesnippetService
         $codesnippet = $this->getAuthUserCodesnippet($id);
         $this->save($codesnippet, $data);
     }
-    public function create(array $data){
-        $this->save(new Codesnippet, $data);
+    public function create(array $data): int{
+        return $this->save(new Codesnippet, $data);
     }
 
-    private function save(Codesnippet $codesnippet, array $data){
+    private function save(Codesnippet $codesnippet, array $data): int{
         $codesnippet->fill($data);
         $codesnippet->user()->associate(auth()->user());
         $codesnippet->save();
+        return $codesnippet->id;
     }
 
     public function delete($id)
