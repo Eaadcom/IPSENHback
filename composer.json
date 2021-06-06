@@ -16,8 +16,7 @@
         "laravel/lumen-framework": "^8.0",
         "pearl/lumen-request-validate": "^1.6",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "^5.0",
-        "tymon/jwt-auth": "dev-develop"
+        "pusher/pusher-php-server": "^5.0"
     },
     "require-dev": {
         "behat/behat": "^3.8",
