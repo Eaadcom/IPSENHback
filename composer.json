@@ -14,10 +14,10 @@
         "fruitcake/laravel-cors": "^2.0",
         "illuminate/redis": "^8.41",
         "laravel/lumen-framework": "^8.0",
-        "lcobucci/jwt": "^4.1",
         "pearl/lumen-request-validate": "^1.6",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "^5.0"
+        "pusher/pusher-php-server": "^5.0",
+        "tymon/jwt-auth": "dev-develop"
     },
     "require-dev": {
         "behat/behat": "^3.8",

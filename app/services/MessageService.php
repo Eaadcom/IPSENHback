@@ -21,7 +21,7 @@ class MessageService
             $data
         );
 
-        broadcast(new MessageCreated($message, $likeMatch));
+        event(new MessageCreated($message, $likeMatch));
     }
 
     public function save(Message $message, LikeMatch $likeMatch, array $data): Message

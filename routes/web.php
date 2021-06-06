@@ -29,6 +29,21 @@ $router->group(['prefix' => 'api'], function (Router $router) {
             'as' => 'auth.register',
             'uses' => 'AuthController@register',
         ]);
+
+        $router->group(['middleware' => 'auth:api'], function ($router) {
+            $router->delete('logout', [
+                'as' => 'auth.logout',
+                'uses' => 'AuthController@logout'
+            ]);
+            $router->post('refresh', [
+                'as' => 'auth.refresh',
+                'uses' => 'AuthController@refresh'
+            ]);
+            $router->post('me', [
+                'as' => 'auth.user',
+                'uses' => 'AuthController@me'
+            ]);
+        });
     });
 
     $router->group(['middleware' => 'auth'], function (Router $router) {

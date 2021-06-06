@@ -2,14 +2,8 @@
 
 namespace App\Providers;
 
-use App\guard\JwtGuard;
 use App\Models\User;
-use App\services\JwtService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
-use Lcobucci\JWT\Signer\Key\InMemory;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -20,13 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Auth::extend('jwt', function ($app, $name, array $config) {
-
-            return new JwtGuard(
-                Auth::createUserProvider($config['provider']),
-                $this->getJwtConfig()
-            );
-        });
+        //
     }
 
     /**
@@ -42,19 +30,9 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
 
         $this->app['auth']->viaRequest('api', function ($request) {
-
-            if (!is_null($request->bearerToken())) {
-                return User::where('api_token', $request->bearerToken())->first();
+            if ($request->input('api_token')) {
+                return User::where('api_token', $request->input('api_token'))->first();
             }
-
         });
-    }
-
-    private function getJwtConfig()
-    {
-        return Configuration::forSymmetricSigner(
-            new Sha256(),
-            InMemory::base64Encoded('cjgqNCovTCgmR3ZnJz5DOSVpQGt4Qjk8Vzg0YG9aTWAoJyBKMXY/MWxDIQ==')
-        );
     }
 }
