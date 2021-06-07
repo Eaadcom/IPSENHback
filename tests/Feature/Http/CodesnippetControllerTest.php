@@ -21,7 +21,9 @@ class CodesnippetControllerTest extends TestCase
 
     public function test_authenticated_user_can_create_codesnippet()
     {
-        $this->postAsAuthenticated()->assertResponseOk();
+        $this->postAsAuthenticated()->seeJsonContains([
+            'message' => 'codesnippet succesfully created.'
+            ]);
     }
 
     public function test_not_authenticated_user_cannot_create_codesnippet()
@@ -131,7 +133,9 @@ class CodesnippetControllerTest extends TestCase
 
         $response = $this->actingAs($this->authUser)->
             put(route('codesnippet.put', ['id' => $codesnippet->id]), $codesnippet->toArray());
-        $response->assertResponseOk();
+        $response->seeJsonContains([
+            'message' => 'Codesnippet succesfully updated.'
+        ]);
     }
 
     public function test_api_put_returns_json_when_not_authenticated()
@@ -175,7 +179,9 @@ class CodesnippetControllerTest extends TestCase
 
         $response = $this->actingAs($this->authUser)->
             delete(route('codesnippet.delete', ['id' => $codesnippet->id]));
-        $response->assertResponseOk();
+        $response->seeJsonContains([
+            'message' => 'Codesnippet succesfully deleted.'
+        ]);
     }
 
     public function test_api_delete_returns_json_when_not_authenticated()

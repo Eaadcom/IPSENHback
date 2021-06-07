@@ -54,7 +54,7 @@ class CodesnippetController extends Controller
         try {
             $id = $this->codesnippetService->create($request->all());
             $response = response()->json([
-                'message' => 'codesnippet succesfully collected by user ID.',
+                'message' => 'codesnippet succesfully created.',
                 'id' => $id
             ]);
         }
