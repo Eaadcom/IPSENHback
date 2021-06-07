@@ -32,7 +32,7 @@ class MessageService
             'created_at' => Carbon::now()
         ]);
 
-        broadcast(new MessageCreated($message));
+        event(new MessageCreated($message));
 
         return $message;
     }

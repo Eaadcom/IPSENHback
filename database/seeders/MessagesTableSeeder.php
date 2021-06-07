@@ -16,7 +16,7 @@ class MessagesTableSeeder extends Seeder
      */
     public function run()
     {
-        Message::factory()->count(rand(40, 100))->create([
+        Message::factory()->count(rand(2, 3))->create([
             'sender_id' => function () {
                 return User::all()->random();
             },
