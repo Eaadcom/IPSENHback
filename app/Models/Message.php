@@ -11,19 +11,11 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        'content'
-    ];
-
-    protected $with = [
-        'sender'
+        'content', 'like_match_id', 'created_at', 'sender_id'
     ];
 
     protected $appends = [
         'is_sender'
-    ];
-
-    protected $hidden = [
-        'sender_id'
     ];
 
     public function likeMatch(): BelongsTo

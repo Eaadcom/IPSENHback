@@ -14,10 +14,10 @@ class MessageCreated extends Event implements ShouldBroadcast
     public $sender_id;
     public $created_at;
 
-    public function __construct(Message $message, LikeMatch $likeMatch)
+    public function __construct(Message $message)
     {
         $this->content = $message->content;
-        $this->like_match_id = $likeMatch->id;
+        $this->like_match_id = $message->like_match_id;
         $this->sender_id = $message->sender_id;
         $this->created_at = $message->created_at;
     }
