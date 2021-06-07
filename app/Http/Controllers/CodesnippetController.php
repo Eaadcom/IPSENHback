@@ -52,8 +52,11 @@ class CodesnippetController extends Controller
             'theme' => 'required',
         ]);
         try {
-            $this->codesnippetService->create($request->all());
-            $response = response()->json(['message' => 'Codesnippet succesfully created.']);
+            $id = $this->codesnippetService->create($request->all());
+            $response = response()->json([
+                'message' => 'codesnippet succesfully created.',
+                'id' => $id
+            ]);
         }
         catch (Exception $exception) {
             $response = response()->json(['message' => 'Could not create codesnippet.']);
