@@ -75,9 +75,24 @@ $router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router
     $router->get('user/{id}', 'UserController@get');
 
     // api/v1/codesnippets
-    $router->get('codesnippet/{userId}', 'CodesnippetController@getByUserId');
-    $router->get('codesnippet', 'CodesnippetController@getByAuthId');
-    $router->post('codesnippet', 'CodesnippetController@post');
-    $router->put('codesnippet/{id}', 'CodesnippetController@put');
-    $router->delete('codesnippet/{id}', 'CodesnippetController@delete');
+    $router->get('codesnippet/{userId}', [
+        'as' => 'codesnippet.getByUserId',
+        'uses' => 'CodesnippetController@getByUserId'
+    ]);
+    $router->get('codesnippet', [
+        'as' => 'codesnippet.getByAuthId',
+        'uses' => 'CodesnippetController@getByAuthId'
+    ]);
+    $router->post('codesnippet', [
+        'as' => 'codesnippet.post',
+        'uses' => 'CodesnippetController@post'
+    ]);
+    $router->put('codesnippet/{id}', [
+        'as' => 'codesnippet.put',
+        'uses' => 'CodesnippetController@put'
+    ]);
+    $router->delete('codesnippet/{id}', [
+        'as' => 'codesnippet.delete',
+        'uses' => 'CodesnippetController@delete'
+    ]);
 });
