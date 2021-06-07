@@ -1,15 +1,20 @@
 <?php
 
+namespace Tests\Feature\Http;
+
 use App\Models\Like;
 use App\Models\Message;
 use Illuminate\Queue\Queue;
 use Laravel\Lumen\Testing\DatabaseMigrations;
+use Tests\TestCase;
 
 class MessageControllerTest extends TestCase
 {
     use DatabaseMigrations;
 
     private $message;
+    // TODO: maak gebruik van route('naam.van.route')
+    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
     private $postEndpoint = '/api/v1/like-match/';
     protected function setUp(): void
     {

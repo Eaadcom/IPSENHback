@@ -13,7 +13,7 @@ use Laravel\Lumen\Auth\Authorizable;
 use phpDocumentor\Reflection\Types\Mixed_;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Model implements AuthenticatableContract, AuthorizableContract
+class User extends Model implements AuthenticatableContract, AuthorizableContract, JWTSubject
 {
     use Authenticatable, Authorizable, HasFactory;
 
@@ -44,5 +44,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function sendMessages(): HasMany
     {
         return $this->hasMany(Message::class);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'id' => $this->getKey(),
+            'email' => $this->email,
+            'first_name' => $this->first_name,
+            'middle_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'date_of_birth' => $this->date_of_birth,
+        ];
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
     }
 }

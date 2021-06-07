@@ -1,7 +1,10 @@
 <?php
 
+namespace Tests\Feature\Http;
+
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use App\Models\User;
+use Tests\TestCase;
 
 class UserControllerTest extends TestCase
 {
@@ -10,9 +13,13 @@ class UserControllerTest extends TestCase
 
     private $userThatIsRequesting;
     private $userThatIsPotentialMatch;
+    // TODO: maak gebruik van route('naam.van.route')
+    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
     private $getPotentialMatchesEndpoint = '/api/v1/user/potentialmatches/';
     private $getUserEndpoint = '/api/v1/user/';
 
+    // TODO: deze setup functie doet aardig wat, ik zou de content/generatie/ ect
+    //  wat je ook doet verplaatsen naar een aparte functie
     protected function setUp(): void
     {
         parent::setUp();
@@ -33,27 +40,32 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    public function test_api_post_like_returns_200(){
+    public function test_api_post_like_returns_200()
+    {
         $requestingUserid = $this->userThatIsRequesting->id;
         $this->getPotentialMatches($requestingUserid)->assertResponseOk();
     }
 
-    public function test_api_get_potential_matches_returns_404(){
+    public function test_api_get_potential_matches_returns_404()
+    {
         $faultyRequestingUserId = rand();
         $this->getPotentialMatches($faultyRequestingUserId)->assertResponseStatus(404);
     }
 
-    public function test_api_get_returns_200(){
+    public function test_api_get_returns_200()
+    {
         $requestedUserid = $this->userThatIsRequesting->id;
         $this->getUser($requestedUserid)->assertResponseOk();
     }
 
-    public function test_api_get_returns_404(){
+    public function test_api_get_returns_404()
+    {
         $faultyRequestedUserId = rand();
         $this->getUser($faultyRequestedUserId)->assertResponseStatus(404);
     }
 
-    private function getUser(int $id){
+    private function getUser(int $id)
+    {
         return $this->actingAs($this->userThatIsRequesting)->get($this->getUserEndpoint . $id);
     }
 

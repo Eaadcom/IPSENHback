@@ -24,7 +24,7 @@ class UserFactory extends Factory
     {
         return [
             'email' => $this->faker->unique()->safeEmail(),
-            'password' => app('hash')->make('Wachtwoord'),
+            'password' => '$2y$10$SPGirhL/vQzvng6aSV1RNubkPFjAmcNUHlJ0y1x7tab84JeAQTjxa', // Wachtwoord, case-sensitive
             'first_name' => $this->faker->firstName(),
             'middle_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
