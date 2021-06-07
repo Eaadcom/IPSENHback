@@ -45,7 +45,7 @@ sonarqube-check:
 archive:app:
   stage: archiving
   script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
     - cat $ACSII_ART_ARCHIVING
   artifacts:
     paths:
