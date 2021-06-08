@@ -1,4 +1,4 @@
-image: composer:2.0.11
+image: composer
 stages:
   - testing
   - sonarqube
@@ -9,13 +9,18 @@ stages:
 test:phpunit:
   stage: testing
   script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --colors=never
+  artifacts:
+    paths:
+      - ./storage/logs # for debugging
+    expire_in: 1 hrs
+    when: on_failure
 
 test:behat:
   stage: testing
   script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
     - php ./vendor/bin/behat
 
 sonarqube-check:
@@ -40,7 +45,7 @@ sonarqube-check:
 archive:app:
   stage: archiving
   script:
-    - composer install --prefer-dist --no-interaction --no-progress --no-scripts
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
     - cat $ACSII_ART_ARCHIVING
   artifacts:
     paths:
