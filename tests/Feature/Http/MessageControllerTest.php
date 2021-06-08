@@ -4,7 +4,6 @@ namespace Tests\Feature\Http;
 
 use App\Models\Like;
 use App\Models\Message;
-use Illuminate\Queue\Queue;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -13,22 +12,18 @@ class MessageControllerTest extends TestCase
     use DatabaseMigrations;
 
     private $message;
-    // TODO: maak gebruik van route('naam.van.route')
-    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
-    private $postEndpoint = '/api/v1/like-match/';
+    private $likeMatchId;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $like = Like::factory()->create();
-        $likeMatchid = $like->likeMatch->id;
-
+        $this->likeMatchId = $like->likeMatch->id;
         $this->message = Message::factory()->make([
-            'like_match_id' => $likeMatchid,
+            'like_match_id' => $this->likeMatchId,
             'sender_id' => $like->user->id
         ]);
-
-        $this->postEndpoint .= $likeMatchid . '/message';
     }
 
     public function test_api_post_message_returns_status_200_when_authenticated()
@@ -76,10 +71,14 @@ class MessageControllerTest extends TestCase
     }
 
     private function postAsAuthenticated() {
-        return $this->actingAs($this->message->sender)->post($this->postEndpoint, $this->message->toArray());
+        return $this->actingAs($this->message->sender)->post(
+            route('message.post', ['id' => $this->likeMatchId]),
+            $this->message->toArray());
     }
 
     private function postAsNotAuthenticated() {
-        return $this->post($this->postEndpoint, $this->message->toArray());
+        return $this->post(
+            route('message.post', ['id' => $this->likeMatchId]),
+            $this->message->toArray());
     }
 }
