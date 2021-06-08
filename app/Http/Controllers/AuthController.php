@@ -10,8 +10,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 class AuthController extends Controller
@@ -53,7 +52,7 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         return $this->respondWithToken(
-            /** @var JwtGuard auth() */
+        /** @var JwtGuard auth() */
             auth()->refresh()
         );
     }
@@ -67,11 +66,14 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $this->authService->register(
+        /** @var JWTSubject $user */
+        $user = $this->authService->register(
             new User,
             $request->validated()
         );
 
-        return response()->json(['message' => 'user created successfully']);
+        $token = auth()->login($user);
+
+        return response()->json(['token' => $token]);
     }
 }
