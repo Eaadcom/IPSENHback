@@ -15,9 +15,6 @@ class LikeControllerTest extends TestCase
     private $likingUser;
     private $likedUser;
     private $like;
-    // TODO: maak gebruik van route('naam.van.route')
-    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
-    private $postLikeEndpoint = '/api/v1/like';
 
     protected function setUp(): void
     {
@@ -49,6 +46,6 @@ class LikeControllerTest extends TestCase
 
     private function postLikeAsAuthenticatedUser(array $like)
     {
-        return $this->actingAs($this->likedUser)->post($this->postLikeEndpoint, $like);
+        return $this->actingAs($this->likedUser)->post(route('like.post'), $like);
     }
 }

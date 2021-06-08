@@ -13,10 +13,6 @@ class UserControllerTest extends TestCase
 
     private $userThatIsRequesting;
     private $userThatIsPotentialMatch;
-    // TODO: maak gebruik van route('naam.van.route')
-    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
-    private $getPotentialMatchesEndpoint = '/api/v1/user/potentialmatches/';
-    private $getUserEndpoint = '/api/v1/user/';
 
     // TODO: deze setup functie doet aardig wat, ik zou de content/generatie/ ect
     //  wat je ook doet verplaatsen naar een aparte functie
@@ -66,11 +62,11 @@ class UserControllerTest extends TestCase
 
     private function getUser(int $id)
     {
-        return $this->actingAs($this->userThatIsRequesting)->get($this->getUserEndpoint . $id);
+        return $this->actingAs($this->userThatIsRequesting)->get(route('user.get', ['id' => $id]));
     }
 
     private function getPotentialMatches(int $id)
     {
-        return $this->actingAs($this->userThatIsRequesting)->get($this->getPotentialMatchesEndpoint . $id);
+        return $this->actingAs($this->userThatIsRequesting)->get(route('user.getPotentialMatches', ['id' => $id]));
     }
 }
