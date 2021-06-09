@@ -8,11 +8,6 @@ stages:
 
 test:phpunit:
   stage: testing
-  before_script:
-    - pecl install xdebug-3.0.0
-    - docker-php-ext-enable xdebug
-  variables:
-    XDEBUG_MODE: "coverage"
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
     - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --whitelist src --colors=never
