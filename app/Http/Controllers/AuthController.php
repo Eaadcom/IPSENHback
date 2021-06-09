@@ -28,7 +28,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -37,7 +37,7 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function me(): JsonResponse
+    public function authUser(): JsonResponse
     {
         return response()->json(auth()->user());
     }

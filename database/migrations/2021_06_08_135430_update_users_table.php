@@ -15,10 +15,11 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('middle_name')->default('')->nullable()->change();
-            $table->integer('age_range_bottom')->nullable()->change();
-            $table->integer('age_range_top')->nullable()->change();
-            $table->integer('max_distance')->nullable()->change();
-            $table->dateTime('date_of_birth')->change();
+            $table->string('interest')->default('female')->change();
+            $table->integer('age_range_bottom')->default(18)->nullable()->change();
+            $table->integer('age_range_top')->default(100)->nullable()->change();
+            $table->integer('max_distance')->default(0)->nullable()->change();
+            $table->date('date_of_birth')->change();
             $table->dropColumn('api_token');
             $table->text('about_me')
                 ->nullable()

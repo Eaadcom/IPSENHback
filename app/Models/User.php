@@ -26,6 +26,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'date_of_birth',
     ];
 
+    protected $casts = [
+        'date_of_birth' => 'date:d-m-Y',
+    ];
+
     protected $hidden = [
         'password',
     ];
