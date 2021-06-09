@@ -9,7 +9,7 @@ stages:
 test:phpunit:
   stage: testing
   before_script:
-    - sudo apt-get install php7.4-xdebug 
+    - pecl install xdebug-3.0.0
     - docker-php-ext-enable xdebug
   variables:
     XDEBUG_MODE: "coverage"
