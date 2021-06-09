@@ -24,11 +24,24 @@
         <server name="BROADCAST_DRIVER" value="null"/>
     </php>
 
-    <coverage>
+    <coverage includeUncoveredFiles="true"
+              processUncoveredFiles="true"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+
+        <exclude>
+            <directory suffix=".php">src/generated</directory>
+            <file>src/autoload.php</file>
+        </exclude>
+
         <report>
             <clover outputFile="reports/clover.xml"/>
         </report>
     </coverage>
+
     <logging>
         <junit outputFile="reports/junit.xml"/>
     </logging>
