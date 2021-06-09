@@ -62,11 +62,7 @@ class LikeControllerTest extends TestCase
 
     public function test_api_post_like_doesnt_create_like_in_database_when_not_authenticated()
     {
-        $this->like = Like::factory()->create([
-            'user_id' => $this->likingUser->id,
-            'user_id_of_liked_user' => $this->likedUser->id,
-            'type' => 'dislike'
-        ]);
+        $this->like->type = 'dislike';
 
         $this->postLikeAsNotAuthenticatedUser($this->like->toArray());
 
