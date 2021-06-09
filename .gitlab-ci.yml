@@ -10,7 +10,7 @@ test:phpunit:
   stage: testing
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
-    - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover reports/clover.xml --colors=never
+    - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover ./reports/clover.xml --colors=never
   artifacts:
     paths:
       - ./storage/logs # for debugging
