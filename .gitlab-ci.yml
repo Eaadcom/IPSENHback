@@ -10,7 +10,7 @@ test:phpunit:
   stage: testing
   before_script:
     - apk add autoconf
-    - pecl install xdebug-3.0.0
+    - pecl install xdebug-2.6.0beta1
     - docker-php-ext-enable xdebug
   variables:
     XDEBUG_MODE: "coverage"
