@@ -12,10 +12,6 @@ class LikeMatchControllerTest extends TestCase
 
     private $likeMatchId;
     private $likeUser;
-    // TODO: maak gebruik van route('naam.van.route')
-    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
-    private $getByIdEndpoint = '/api/v1/like-match/';
-    private $getAllEndpoint = '/api/v1/like-match';
 
     protected function setUp(): void
     {
@@ -69,19 +65,19 @@ class LikeMatchControllerTest extends TestCase
 
     public function test_api_get_match_returns_status_401_when_not_authenticated()
     {
-        $this->get($this->getByIdEndpoint . $this->likeMatchId)->assertResponseStatus(401);
+        $this->get(route('like-match.get', ['id' => $this->likeMatchId]))->assertResponseStatus(401);
     }
 
     public function test_api_get_match_returns_json_with_error_message_when_not_authenticated()
     {
-        $this->get($this->getByIdEndpoint . $this->likeMatchId)->seeJsonEquals([
+        $this->get(route('like-match.get', ['id' => $this->likeMatchId]))->seeJsonEquals([
             'message' => 'Unauthorized'
         ]);
     }
 
     public function test_api_get_match_returns_json_with_without_data_when_not_authenticated()
     {
-        $this->get($this->getByIdEndpoint . $this->likeMatchId)->dontSeeJson([
+        $this->get(route('like-match.get', ['id' => $this->likeMatchId]))->dontSeeJson([
             'messages',
             'matched_user'
         ]);
@@ -89,7 +85,7 @@ class LikeMatchControllerTest extends TestCase
 
     public function test_api_get_matches_of_user_returns_status_200_when_authenticated()
     {
-        $this->actingAs($this->likeUser)->get($this->getAllEndpoint)->assertResponseOk();
+        $this->actingAs($this->likeUser)->get(route('like-match.getAll'))->assertResponseOk();
     }
 
     public function test_api_get_matches_of_user_returns_status_401_when_not_authenticated()
@@ -144,21 +140,21 @@ class LikeMatchControllerTest extends TestCase
 
     private function deleteByIdAsAuthenticatedUser($id)
     {
-        return $this->actingAs($this->likeUser)->delete($this->getByIdEndpoint . $id);
+        return $this->actingAs($this->likeUser)->delete(route('like-match.delete', ['id' => $id]));
     }
 
     private function deleteByIdAsNotAuthenticatedUser($id)
     {
-        return $this->delete($this->getByIdEndpoint . $id);
+        return $this->delete(route('like-match.delete', ['id' => $id]));
     }
 
     private function getByIdAsAuthenticatedUser($id)
     {
-        return $this->actingAs($this->likeUser)->get($this->getByIdEndpoint . $id);
+        return $this->actingAs($this->likeUser)->get(route('like-match.get', ['id' => $id]));
     }
 
     private function getAllAsNotAuthenticatedUser()
     {
-        return $this->get($this->getAllEndpoint);
+        return $this->get(route('like-match.getAll'));
     }
 }

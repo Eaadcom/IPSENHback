@@ -86,10 +86,10 @@ class LikeControllerTest extends TestCase
 
     private function postLikeAsAuthenticatedUser(array $like)
     {
-        return $this->actingAs($this->likedUser)->post(route('like'), $like);
+        return $this->actingAs($this->likedUser)->post(route('like.post'), $like);
     }
 
     private function postLikeAsNotAuthenticatedUser(array $like) {
-        return $this->post(route('like'), $like);
+        return $this->post(route('like.post'), $like);
     }
 }
