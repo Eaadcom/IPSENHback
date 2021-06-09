@@ -26,10 +26,10 @@
 
     <coverage>
         <report>
-            <clover outputFile="clover.xml"/>
+            <clover outputFile="reports/clover.xml"/>
         </report>
     </coverage>
     <logging>
-        <junit outputFile="junit.xml"/>
+        <junit outputFile="reports/junit.xml"/>
     </logging>
 </phpunit>
