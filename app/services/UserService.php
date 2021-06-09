@@ -51,9 +51,7 @@ class UserService
 
     public function getPotentialMatches(int $id): array
     {
-
         $user = User::findOrFail($id);
-
 
         $maxAge = $user->date_of_birth->addYears($user->age_range_top);
         $minAge = $user->date_of_birth->subYears($user->age_range_bottom);
