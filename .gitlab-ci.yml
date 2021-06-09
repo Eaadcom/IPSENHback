@@ -14,8 +14,9 @@ test:phpunit:
   artifacts:
     paths:
       - ./storage/logs # for debugging
+      - reports/
     expire_in: 1 hrs
-    when: on_failure
+    when: always
 
 test:behat:
   stage: testing
