@@ -23,4 +23,13 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="BROADCAST_DRIVER" value="null"/>
     </php>
+
+    <coverage>
+        <report>
+            <clover outputFile="reports/clover.xml"/>
+        </report>
+    </coverage>
+    <logging>
+        <junit outputFile="reports/junit.xml"/>
+    </logging>
 </phpunit>
