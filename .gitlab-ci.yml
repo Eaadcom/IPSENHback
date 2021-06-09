@@ -9,7 +9,7 @@ stages:
 test:phpunit:
   stage: testing
   before_script:
-    - brew install autoconf
+    - pecl install autoconf
     - pecl install xdebug-3.0.0
     - docker-php-ext-enable xdebug
   variables:
