@@ -13,17 +13,15 @@ class UserControllerTest extends TestCase
 
     private $userThatIsRequesting;
     private $userThatIsPotentialMatch;
-    // TODO: maak gebruik van route('naam.van.route')
-    //  check hoe ik dat gedaan heb bij AuthControllerTest & web.php
-    private $getPotentialMatchesEndpoint = '/api/v1/user/potentialmatches/';
-    private $getUserEndpoint = '/api/v1/user/';
 
-    // TODO: deze setup functie doet aardig wat, ik zou de content/generatie/ ect
-    //  wat je ook doet verplaatsen naar een aparte functie
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->generateUsers();
+    }
+
+    private function generateUsers(){
         $this->userThatIsRequesting = User::factory()->create([
             'gender' => 'male',
             'age_range_top' => 20,
@@ -40,37 +38,59 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    public function test_api_post_like_returns_200()
+    public function test_api_get_potential_matches_returns_200()
     {
-        $requestingUserid = $this->userThatIsRequesting->id;
-        $this->getPotentialMatches($requestingUserid)->assertResponseOk();
+        $this->getPotentialMatchesAsAuthenticatedUser($this->userThatIsRequesting->id)->assertResponseOk();
     }
 
     public function test_api_get_potential_matches_returns_404()
     {
         $faultyRequestingUserId = rand();
-        $this->getPotentialMatches($faultyRequestingUserId)->assertResponseStatus(404);
+        $this->getPotentialMatchesAsAuthenticatedUser($faultyRequestingUserId)->assertResponseStatus(404);
     }
 
     public function test_api_get_returns_200()
     {
-        $requestedUserid = $this->userThatIsRequesting->id;
-        $this->getUser($requestedUserid)->assertResponseOk();
+        $this->getUserAsAuthenticatedUser($this->userThatIsPotentialMatch->id)->assertResponseOk();
     }
 
     public function test_api_get_returns_404()
     {
         $faultyRequestedUserId = rand();
-        $this->getUser($faultyRequestedUserId)->assertResponseStatus(404);
+        $this->getUserAsAuthenticatedUser($faultyRequestedUserId)->assertResponseStatus(404);
     }
 
-    private function getUser(int $id)
+    public function test_api_get_user_returns_json_when_not_authenticated()
     {
-        return $this->actingAs($this->userThatIsRequesting)->get($this->getUserEndpoint . $id);
+        $this->getUserAsNotAuthenticatedUser($this->userThatIsPotentialMatch->id)->seeJsonEquals([
+            'message' => 'Unauthorized'
+        ]);
     }
 
-    private function getPotentialMatches(int $id)
+    public function test_api_get_potentialmatches_returns_json_when_not_authenticated()
     {
-        return $this->actingAs($this->userThatIsRequesting)->get($this->getPotentialMatchesEndpoint . $id);
+        $this->getPotentialMatchesAsNotAuthenticatedUser($this->userThatIsRequesting->id)->seeJsonEquals([
+            'message' => 'Unauthorized'
+        ]);
+    }
+
+    private function getUserAsAuthenticatedUser(int $id)
+    {
+        return $this->actingAs($this->userThatIsRequesting)->get(route('user.get', ['id' => $id]));
+    }
+
+    private function getUserAsNotAuthenticatedUser(int $id)
+    {
+        return $this->get(route('user.get', ['id' => $id]));
+    }
+
+    private function getPotentialMatchesAsAuthenticatedUser(int $id)
+    {
+        return $this->actingAs($this->userThatIsRequesting)->get(route('user.getPotentialMatches', ['id' => $id]));
+    }
+
+    private function getPotentialMatchesAsNotAuthenticatedUser(int $id)
+    {
+        return $this->get(route('user.getPotentialMatches', ['id' => $id]));
     }
 }

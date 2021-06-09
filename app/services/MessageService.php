@@ -5,9 +5,9 @@ namespace App\services;
 
 
 use App\Events\MessageCreated;
+use App\Http\Requests\StoreMessageRequest;
 use App\Models\LikeMatch;
 use App\Models\Message;
-use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
 class MessageService
@@ -23,7 +23,7 @@ class MessageService
         );
     }
 
-    public function broadcast(Request $request): Message
+    public function broadcast(StoreMessageRequest $request): Message
     {
         $message = new Message([
             'content' => $request->get('content'),
