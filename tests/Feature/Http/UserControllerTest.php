@@ -40,8 +40,7 @@ class UserControllerTest extends TestCase
 
     public function test_api_get_potential_matches_returns_200()
     {
-        $requestingUserid = $this->userThatIsRequesting->id;
-        $this->getPotentialMatchesAsAuthenticatedUser($requestingUserid)->assertResponseOk();
+        $this->getPotentialMatchesAsAuthenticatedUser($this->userThatIsRequesting->id)->assertResponseOk();
     }
 
     public function test_api_get_potential_matches_returns_404()
@@ -52,8 +51,7 @@ class UserControllerTest extends TestCase
 
     public function test_api_get_returns_200()
     {
-        $requestedUserid = $this->userThatIsRequesting->id;
-        $this->getUserAsAuthenticatedUser($requestedUserid)->assertResponseOk();
+        $this->getUserAsAuthenticatedUser($this->userThatIsPotentialMatch->id)->assertResponseOk();
     }
 
     public function test_api_get_returns_404()
@@ -64,16 +62,14 @@ class UserControllerTest extends TestCase
 
     public function test_api_get_user_returns_json_when_not_authenticated()
     {
-        $requestedUserid = $this->userThatIsRequesting->id;
-        $this->getUserAsNotAuthenticatedUser($requestedUserid)->seeJsonEquals([
+        $this->getUserAsNotAuthenticatedUser($this->userThatIsPotentialMatch->id)->seeJsonEquals([
             'message' => 'Unauthorized'
         ]);
     }
 
     public function test_api_get_potentialmatches_returns_json_when_not_authenticated()
     {
-        $requestedUserid = $this->userThatIsRequesting->id;
-        $this->getPotentialMatchesAsNotAuthenticatedUser($requestedUserid)->seeJsonEquals([
+        $this->getPotentialMatchesAsNotAuthenticatedUser($this->userThatIsRequesting->id)->seeJsonEquals([
             'message' => 'Unauthorized'
         ]);
     }
