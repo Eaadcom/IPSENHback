@@ -48,8 +48,7 @@ class LikeMatch extends Model
             'id' => $user->id,
             'first_name' => $user->first_name,
             'middle_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'about_me' => $user->about_me
+            'last_name' => $user->last_name
         ];
     }
 }
