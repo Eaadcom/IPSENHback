@@ -42,7 +42,14 @@ class LikeMatch extends Model
     {
         $like = $this->like;
 
-        return auth()->id() == $like->user_id ? $like->target : $like->user;
+        $user = auth()->id() == $like->user_id ? $like->target : $like->user;
 
+        return [
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'middle_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'about_me' => $user->about_me
+        ];
     }
 }
