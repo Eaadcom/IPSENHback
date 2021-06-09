@@ -27,7 +27,8 @@ class UserService
     }
 
     public function get($id){
-        return User::query()->findOrFail($id);
+        return User::select('id', 'first_name', 'middle_name', 'last_name', 'about_me')
+            ->findOrFail($id);
     }
 
     public function save(User $user, array $data)
