@@ -16,27 +16,11 @@ class LikeMatchService
         return LikeMatch::factory()->create()->id;
     }
 
-    public function update(LikeMatch $likeMatch, array $data)
-    {
-        $this->save(
-            $likeMatch,
-            $data
-        );
-    }
-
-    public function save(LikeMatch $likeMatch, array $data)
-    {
-        $likeMatch->fill($data);
-
-        $likeMatch->save();
-    }
-
     public function delete($id)
     {
 
         return LikeMatch::query()->findOrFail($id)
             ->update(['deleted_at'=>Carbon::now()]);
-
     }
 
     public function getById($id)
