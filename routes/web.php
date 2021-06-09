@@ -68,7 +68,10 @@ $router->group(['prefix' => 'api/v1', 'middleware' => 'auth'], function ($router
     $router->post('like-match/{id}/message', 'MessageController@post');
 
     // api/v1/like
-    $router->post('like', 'LikeController@post');
+    $router->post('like', [
+        'as' => 'like',
+        'uses' => 'LikeController@post'
+    ]);
 
     // api/v1/user
     $router->get('user/potentialmatches/{id}', 'UserController@getPotentialMatches');
