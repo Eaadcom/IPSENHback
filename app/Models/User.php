@@ -28,6 +28,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     protected $casts = [
         'date_of_birth' => 'date:d-m-Y',
+        'age_range_bottom' => 'integer',
+        'age_range_top' => 'integer',
+        'max_distance' => 'integer',
     ];
 
     protected $hidden = [
