@@ -7,7 +7,12 @@ RUN apt-get update && \
     a2enmod rewrite && \
     service apache2 restart && \
     apt-get update && \
-    apt-get install supervisor -y && apt autoremove -y
+    apt-get install supervisor -y && apt autoremove -y \
+    yes | pecl install xdebug \
+        && echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+        && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+        && echo "xdebug.remote_autostart=off" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && docker-php-ext-enable xdebug
 
 COPY . .
 
