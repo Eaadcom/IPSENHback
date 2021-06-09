@@ -3,13 +3,13 @@
 namespace Tests\Unit\Services;
 
 use App\Events\MessageCreated;
+use App\Http\Requests\StoreMessageRequest;
 use App\Models\Like;
 use App\Models\LikeMatch;
 use App\Models\Message;
 use App\services\MessageService;
 use Illuminate\Support\Carbon;
 use Tests\TestCase;
-use Illuminate\Http\Request;
 
 class MessageServiceTest extends Testcase
 {
@@ -34,7 +34,7 @@ class MessageServiceTest extends Testcase
             'sender_id' => $this->like->user->id
         ]);
 
-        $this->request = new Request([$this->message]);
+        $this->request = new StoreMessageRequest([$this->message]);
     }
 
     public function test_service_create_function_stores_like_match_in_the_database()
