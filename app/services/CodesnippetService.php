@@ -6,6 +6,8 @@ namespace App\services;
 
 use App\Models\Codesnippet;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Collection\Collection;
 
 class CodesnippetService
 {
@@ -15,11 +17,14 @@ class CodesnippetService
         $codesnippet = $this->getAuthUserCodesnippet($id);
         $this->save($codesnippet, $data);
     }
-    public function create(array $data): int{
+
+    public function create(array $data): int
+    {
         return $this->save(new Codesnippet, $data);
     }
 
-    private function save(Codesnippet $codesnippet, array $data): int{
+    private function save(Codesnippet $codesnippet, array $data): int
+    {
         $codesnippet->fill($data);
         $codesnippet->user()->associate(auth()->user());
         $codesnippet->save();
@@ -33,12 +38,13 @@ class CodesnippetService
 
     public function getByUserId($id)
     {
-        return User::findOrFail($id)->codesnippets;
+        return User::findOrFail($id)->codesnippets()->orderByDesc('created_at')->get();
     }
 
-    public function getAuthUserCodesnippet(int $codesnippetId) {
+    public function getAuthUserCodesnippet(int $codesnippetId)
+    {
         $user = auth()->user();
 
-        return $user->codesnippets()->findOrFail($codesnippetId);
+        return $user->codesnippets()->orderByDesc('created_at')->findOrFail($codesnippetId);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Codesnippet;
 use App\Models\Like;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
@@ -27,7 +28,8 @@ class UserService
         );
     }
 
-    public function get($id){
+    public function get($id)
+    {
         return User::select('id', 'first_name', 'middle_name', 'last_name', 'about_me')
             ->findOrFail($id);
     }
@@ -35,6 +37,10 @@ class UserService
     public function save(User $user, array $data)
     {
         $user->fill($data);
+
+        if (isset($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
 
         $user->save();
     }
@@ -49,14 +55,12 @@ class UserService
 
         $user = User::findOrFail($id);
 
-        $maxAge = Carbon::createFromFormat('Y-m-d', $user['date_of_birth'])
-            ->addYears($user['age_range_top'])->year;
-        $minAge = Carbon::createFromFormat('Y-m-d', $user['date_of_birth'])
-            ->subYears($user['age_range_bottom'])->year;
+        $maxAge = $user->date_of_birth->addYears($user->age_top_rage);
+        $minAge = $user->date_of_birth->subYears($user->age_top_rage);
 
         $likedUsers = Like::select('user_id_of_liked_user')
-            ->where('user_id', '=', $id)
-            ->get()->keyBy('user_id_of_liked_user')->keys()->all();
+            ->where('user_id', '=', $id)->get()
+            ->keyBy('user_id_of_liked_user')->keys()->all();
 
         $likedBackUsers = Like::select('user_id')
             ->where('user_id_of_liked_user', '=', $id)
