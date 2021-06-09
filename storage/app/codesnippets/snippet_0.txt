@@ -1,0 +1,4 @@
+    if (block != Material.LEVER) {
+      if (block != Material.BED) {
+        if (block != Material.BED_BLOCK) {
+          if (block != Material.CACTUS) {

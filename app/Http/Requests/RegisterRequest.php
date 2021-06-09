@@ -17,15 +17,15 @@ class RegisterRequest extends RequestAbstract
             'email'             => 'required|email|unique:users,email',
             'password'          => 'required|string|min:8',
             'first_name'        => 'required|string|min:3',
-            'middle_name'       => 'required|string|min:3',
+            'middle_name'       => 'string|min:3',
             'last_name'         => 'required|string|min:3',
-            'gender'            => 'required|string',
             'date_of_birth'     => 'required|date',
-            'about_me'          => 'required|string',
-            'age_range_top'     => 'required|integer',
-            'age_range_bottom'  => 'required|integer',
-            'max_distance'      => 'required|integer',
-            'interest'          => 'required|string',
+            'gender'            => 'required|string|in:male,female',
+//            'about_me'          => 'string',
+//            'age_range_top'     => 'integer',
+//            'age_range_bottom'  => 'integer',
+//            'max_distance'      => 'integer',
+//            'interest'          => 'string',
         ];
     }
 }

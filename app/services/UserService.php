@@ -27,7 +27,8 @@ class UserService
         );
     }
 
-    public function get($id){
+    public function get($id)
+    {
         return User::select('id', 'first_name', 'middle_name', 'last_name', 'about_me')
             ->findOrFail($id);
     }
@@ -53,12 +54,13 @@ class UserService
 
         $user = User::findOrFail($id);
 
+
         $maxAge = $user->date_of_birth->addYears($user->age_range_top);
         $minAge = $user->date_of_birth->subYears($user->age_range_bottom);
 
         $likedUsers = Like::select('user_id_of_liked_user')
-            ->where('user_id', '=', $id)->get()
-            ->keyBy('user_id_of_liked_user')->keys()->all();
+            ->where('user_id', '=', $id)
+            ->get()->keyBy('user_id_of_liked_user')->keys()->all();
 
         $likedBackUsers = Like::select('user_id')
             ->where('user_id_of_liked_user', '=', $id)
