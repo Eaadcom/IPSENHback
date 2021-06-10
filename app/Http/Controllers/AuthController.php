@@ -10,8 +10,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use App\services\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 
 class AuthController extends Controller
@@ -29,7 +28,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = request(['email', 'password']);
+        $credentials = $request->only(['email', 'password']);
 
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -38,7 +37,7 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
-    public function me(): JsonResponse
+    public function authUser(): JsonResponse
     {
         return response()->json(auth()->user());
     }
@@ -53,7 +52,7 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         return $this->respondWithToken(
-            /** @var JwtGuard auth() */
+        /** @var JwtGuard auth() */
             auth()->refresh()
         );
     }
@@ -67,11 +66,14 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): JsonResponse
     {
-        $this->authService->register(
+        /** @var JWTSubject $user */
+        $user = $this->authService->register(
             new User,
             $request->validated()
         );
 
-        return response()->json(['message' => 'user created successfully']);
+        $token = auth()->login($user);
+
+        return response()->json(['token' => $token]);
     }
 }

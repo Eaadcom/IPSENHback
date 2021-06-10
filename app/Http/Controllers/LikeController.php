@@ -36,6 +36,7 @@ class LikeController extends Controller
         ]);
 
         $userIdOfLikedUser = $request->get('user_id_of_liked_user');
+
         if ($this->likeService->checkIfLikeExists($userIdOfLikedUser)) {
             $this->likeService->returnLike($request->all());
 

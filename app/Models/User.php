@@ -22,8 +22,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'about_me', 'age_range_bottom', 'age_range_top', 'max_distance', 'interest'
     ];
 
+    protected $dates = [
+        'date_of_birth',
+    ];
+
+    protected $casts = [
+        'date_of_birth' => 'date:d-m-Y',
+        'age_range_bottom' => 'integer',
+        'age_range_top' => 'integer',
+        'max_distance' => 'integer',
+    ];
+
     protected $hidden = [
-        'password', 'api_token',
+        'password',
     ];
 
     public function codesnippets(): HasMany
