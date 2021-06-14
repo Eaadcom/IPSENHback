@@ -13,7 +13,7 @@ test:phpunit:
     - php ./vendor/bin/phpunit --configuration phpunit.xml
   artifacts:
     paths:
-      - ./storage/logs #debug
+      - ./storage/logs
       - ./reports
     expire_in: 1 hrs
     when: always
@@ -40,7 +40,7 @@ sonarqube-check:
   script:
     - sonar-scanner
   allow_failure: true
- only:
+  only:
    - development
    - master
 
