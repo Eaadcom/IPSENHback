@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Models\User;
 use App\services\AuthService;
+use Carbon\Carbon;
 use Tests\TestCase;
 
 class AuthServiceTest extends TestCase
@@ -35,8 +36,8 @@ class AuthServiceTest extends TestCase
         );
 
         // we hide the password because it not hashed.
-        $databaseData = $newUser->makeHidden('password')->toArray();
-        $this->seeInDatabase('users', $newUser->makeHidden('password')->toArray());
+        $databaseData = $newUser->makeHidden('password', 'date_of_birth')->toArray();
+        $this->seeInDatabase('users', $databaseData);
     }
 
 

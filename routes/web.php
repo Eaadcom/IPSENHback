@@ -31,7 +31,7 @@ $router->group(['prefix' => 'api'], function (Router $router) {
         ]);
 
         $router->group(['middleware' => 'auth:api'], function ($router) {
-            $router->delete('logout', [
+            $router->post('logout', [
                 'as' => 'auth.logout',
                 'uses' => 'AuthController@logout'
             ]);
@@ -39,9 +39,9 @@ $router->group(['prefix' => 'api'], function (Router $router) {
                 'as' => 'auth.refresh',
                 'uses' => 'AuthController@refresh'
             ]);
-            $router->post('me', [
+            $router->get('user', [
                 'as' => 'auth.user',
-                'uses' => 'AuthController@me'
+                'uses' => 'AuthController@authUser'
             ]);
         });
     });
@@ -78,9 +78,15 @@ $router->group(['prefix' => 'api'], function (Router $router) {
             'as' => 'user.getPotentialMatches',
             'uses' => 'UserController@getPotentialMatches'
         ]);
+
         $router->get('user/{id}', [
             'as' => 'user.get',
             'uses' => 'UserController@get'
+        ]);
+
+        $router->put('user', [
+            'as' => 'user.put',
+            'uses' => 'UserController@put'
         ]);
 
         // api/v1/codesnippets
@@ -106,6 +112,3 @@ $router->group(['prefix' => 'api'], function (Router $router) {
         ]);
     });
 });
-
-
-
