@@ -13,7 +13,7 @@ test:phpunit:
     - php ./vendor/bin/phpunit --configuration phpunit.xml
   artifacts:
     paths:
-      - ./storage/logs # for debugging
+      - ./storage/logs #debug
       - ./reports
     expire_in: 1 hrs
     when: always
