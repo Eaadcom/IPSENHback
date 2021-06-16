@@ -15,8 +15,8 @@ class UpdateUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('middle_name')->default('')->nullable()->change();
-            $table->string('interest')->default('female')->change();
-            $table->integer('age_range_bottom')->default(18)->nullable()->change();
+            $table->string('interest')->default('any')->change();
+            $table->integer('age_range_bottom')->default(100)->nullable()->change();
             $table->integer('age_range_top')->default(100)->nullable()->change();
             $table->integer('max_distance')->default(0)->nullable()->change();
             $table->date('date_of_birth')->change();
