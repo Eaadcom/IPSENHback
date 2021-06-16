@@ -12,7 +12,7 @@ service supervisor status
 # run artisan migration command & start web server
 if [ "$APP_ENV" == "production" ]
 then
-   php artisan migrate --fresh && apache2-foreground
+   php artisan migrate && apache2-foreground
 else
     php artisan migrate:fresh --seed && apache2-foreground
 fi;
