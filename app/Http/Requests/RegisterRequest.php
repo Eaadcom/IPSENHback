@@ -18,7 +18,8 @@ class RegisterRequest extends RequestAbstract
 
         foreach ($preference as $key => $value) {
             if (is_null($this->request->get($key))) {
-                $this->request->add([$key => $value]);
+                request()->merge([$key => $value]);
+                $this->request->set($key, $value);
             }
         }
     }
@@ -44,7 +45,7 @@ class RegisterRequest extends RequestAbstract
             'email'             => 'required|email|unique:users,email',
             'password'          => 'required|string|min:8',
             'first_name'        => 'required|string|min:3',
-            'middle_name'       => 'string|min:3',
+            'middle_name'       => 'nullable|string|min:3',
             'last_name'         => 'required|string|min:3',
             'date_of_birth'     => 'required|date',
             'gender'            => 'required|string|in:male,female',

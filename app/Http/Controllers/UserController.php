@@ -40,7 +40,6 @@ class UserController extends Controller
         ]);
 
         $this->userService->create($request->all());
-
     }
 
     public function put(UpdateUserRequest $request)
@@ -56,8 +55,6 @@ class UserController extends Controller
 
     public function getPotentialMatches($id): array
     {
-
         return $this->userService->getPotentialMatches($id);
-
     }
 }
