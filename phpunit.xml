@@ -44,9 +44,5 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="BROADCAST_DRIVER" value="null"/>
     </php>
-
-    <logging>
-        <junit outputFile="reports/junit.xml"/>
-    </logging>
 </phpunit>
 

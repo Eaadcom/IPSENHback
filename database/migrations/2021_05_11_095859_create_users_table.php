@@ -18,21 +18,17 @@ class CreateUsersTable extends Migration
 
             $table->string('email')->unique();
             $table->string('password')->notNullable();
-            $table->string('api_token')->nullable();
-
-
-            $table->string('first_name')->nullable(false);
-            $table->string('middle_name')->nullable(false);
-            $table->string('last_name')->nullable(false);
-            $table->string('gender')->nullable(false);
-            $table->date('date_of_birth')->nullable(false);
-            $table->text('about_me')->nullable(false);
-            $table->integer('age_range_bottom')->nullable(false);
-            $table->integer('age_range_top')->nullable(false);
-            $table->integer('max_distance')->nullable(false);
+            $table->string('first_name')->notNullable();
+            $table->string('middle_name')->nullable();
+            $table->string('last_name')->notNullable();
+            $table->string('gender')->notNullable();
+            $table->date('date_of_birth')->notNullable();
+            $table->text('about_me')->notNullable();
+            $table->integer('age_range_bottom')->notNullable();
+            $table->integer('age_range_top')->notNullable();
             $table->string('interest');
 
-            $table->index(['id', 'email', 'api_token']);
+            $table->index(['id', 'email']);
             $table->timestamps();
         });
     }

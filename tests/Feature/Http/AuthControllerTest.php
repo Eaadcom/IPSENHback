@@ -11,6 +11,43 @@ use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
 {
+
+    public function test_auth_user_endpoint_returns_authenticated_user()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('auth.user'));
+
+        $response->seeJson($user->toArray());
+    }
+
+    public function test_logout_removes_authenticated_user()
+    {
+        auth()->login(User::factory()->create());
+
+        $this->post(route('auth.logout'));
+
+        $this->assertEquals(null, auth()->user());
+    }
+
+    public function test_refresh_generates_new_jwt_token()
+    {
+        $token = auth()->login(User::factory()->create());
+
+        $this->post(route('auth.refresh'));
+
+        $this->dontSeeJson(['token' => $token]);
+    }
+
+    public function test_refresh_generates_jwt_token()
+    {
+        $token = auth()->login(User::factory()->create());
+
+        $this->post(route('auth.refresh'));
+
+        $this->seeJsonStructure(['token']);
+    }
+
     public function test_login_returns_status_200_with_valid_credentials()
     {
         $password = $this->getPassword();
@@ -109,6 +146,18 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
+    public function test_login_returns_json_message_indicating_that_user_attempted_with_invalid_credentials()
+    {
+        $response = $this->post(route('auth.login'), [
+            'email' => $this->faker->email,
+            'password' => $this->faker->text(20),
+        ]);
+
+        $response->seeJson([
+            'message' => 'Unauthorized',
+        ]);
+    }
+
     public function test_login_returns_json_with_a_jwt_token()
     {
         $password = $this->getPassword();
@@ -129,8 +178,6 @@ class AuthControllerTest extends TestCase
 
     public function test_register_returns_status_200_with_valid_request()
     {
-        $this->markTestSkipped();
-
         $registrationRequestData = $this->getRegisterRequest()
             ->toArray();
 
@@ -141,8 +188,6 @@ class AuthControllerTest extends TestCase
 
     public function test_register_persist_user_in_database()
     {
-        $this->markTestSkipped();
-
         $registrationRequestData = $this->getRegisterRequest()
             ->toArray();
 
@@ -185,16 +230,15 @@ class AuthControllerTest extends TestCase
         $this->assertResponseStatus(422);
     }
 
-    public function test_register_returns_status_422_when_missing_middle_name()
+    public function test_register_returns_status_200_when_missing_middle_name()
     {
-        $this->markTestSkipped();
         $registrationRequestData = $this->getRegisterRequest()
             ->except('middle_name')
             ->toArray();
 
         $this->post(route('auth.register'), $registrationRequestData);
 
-        $this->assertResponseStatus(422);
+        $this->assertResponseOk();
     }
 
     public function test_register_returns_status_422_when_missing_last_name()
@@ -230,9 +274,8 @@ class AuthControllerTest extends TestCase
         $this->assertResponseStatus(422);
     }
 
-    public function test_register_returns_status_422_when_missing_about_me()
+    public function test_register_returns_status_200_when_missing_about_me()
     {
-        $this->markTestSkipped();
 
         $registrationRequestData = $this->getRegisterRequest()
             ->except('about_me')
@@ -240,59 +283,51 @@ class AuthControllerTest extends TestCase
 
         $this->post(route('auth.register'), $registrationRequestData);
 
-        $this->assertResponseStatus(422);
+        $this->assertResponseOk();
     }
 
-    public function test_register_returns_status_422_when_missing_age_rage_top()
+    public function test_register_returns_status_200_when_missing_age_rage_top()
     {
-        $this->markTestSkipped();
-
         $registrationRequestData = $this->getRegisterRequest()
             ->except('age_range_top')
             ->toArray();
 
         $this->post(route('auth.register'), $registrationRequestData);
 
-        $this->assertResponseStatus(422);
+        $this->assertResponseOk();
     }
 
-    public function test_register_returns_status_422_when_missing_age_range_bottom()
+    public function test_register_returns_status_200_when_missing_age_range_bottom()
     {
-        $this->markTestSkipped();
-
         $registrationRequestData = $this->getRegisterRequest()
             ->except('age_range_bottom')
             ->toArray();
 
         $this->post(route('auth.register'), $registrationRequestData);
 
-        $this->assertResponseStatus(422);
+        $this->assertResponseOk();
     }
 
-    public function test_register_returns_status_422_when_missing_max_distance()
+    public function test_register_returns_status_200_when_missing_max_distance()
     {
-        $this->markTestSkipped();
-
         $registrationRequestData = $this->getRegisterRequest()
             ->except('max_distance')
             ->toArray();
 
         $this->post(route('auth.register'), $registrationRequestData);
 
-        $this->assertResponseStatus(422);
+        $this->assertResponseOk();
     }
 
-    public function test_register_returns_status_422_when_missing_interest()
+    public function test_register_returns_status_200_when_missing_interest()
     {
-        $this->markTestSkipped();
-
         $registrationRequestData = $this->getRegisterRequest()
             ->except('interest')
             ->toArray();
 
         $this->post(route('auth.register'), $registrationRequestData);
 
-        $this->assertResponseStatus(422);
+        $this->assertResponseOk();
     }
 
     public function test_register_returns_json_message_indicating_that_email_is_required()
@@ -334,21 +369,6 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
-    public function test_register_returns_json_message_indicating_that_middle_name_is_optional()
-    {
-        $this->markTestSkipped();
-
-        $registrationRequestData = $this->getRegisterRequest()
-            ->except('middle_name')
-            ->toArray();
-
-        $this->post(route('auth.register'), $registrationRequestData);
-
-        $this->dontSeeJson([
-            'middle_name' => ['The middle name field is required.'],
-        ]);
-    }
-
     public function test_register_returns_json_message_indicating_that_gender_is_required()
     {
         $registrationRequestData = $this->getRegisterRequest()
@@ -372,81 +392,6 @@ class AuthControllerTest extends TestCase
 
         $this->seeJson([
             'date_of_birth' => ['The date of birth field is required.'],
-        ]);
-    }
-
-    public function test_register_returns_json_message_indicating_that_about_me_is_optional()
-    {
-        $this->markTestSkipped();
-
-        $registrationRequestData = $this->getRegisterRequest()
-            ->except('about_me')
-            ->toArray();
-
-        $this->post(route('auth.register'), $registrationRequestData);
-
-        $this->dontSeeJson([
-            'about_me' => ['The about me field is required.'],
-        ]);
-    }
-
-    public function test_register_returns_json_message_indicating_that_age_range_top_is_optional()
-    {
-        $this->markTestSkipped();
-
-        $registrationRequestData = $this->getRegisterRequest()
-            ->except('age_range_top')
-            ->toArray();
-
-        $this->post(route('auth.register'), $registrationRequestData);
-
-        $this->dontSeeJson([
-            'age_range_top' => ['The age range top field is required.'],
-        ]);
-    }
-
-    public function test_register_returns_json_message_indicating_that_age_range_bottom_is_optional()
-    {
-        $this->markTestSkipped();
-
-        $registrationRequestData = $this->getRegisterRequest()
-            ->except('age_range_bottom')
-            ->toArray();
-
-        $this->post(route('auth.register'), $registrationRequestData);
-
-        $this->dontSeeJson([
-            'age_range_bottom' => ['The age range bottom field is required.'],
-        ]);
-    }
-
-    public function test_register_returns_json_message_indicating_that_max_distance_is_optional()
-    {
-        $this->markTestSkipped();
-
-        $registrationRequestData = $this->getRegisterRequest()
-            ->except('max_distance')
-            ->toArray();
-
-        $this->post(route('auth.register'), $registrationRequestData);
-
-        $this->dontSeeJson([
-            'max_distance' => ['The max distance field is required.'],
-        ]);
-    }
-
-    public function test_register_returns_json_message_indicating_that_interest_is_optional()
-    {
-        $this->markTestSkipped();
-
-        $registrationRequestData = $this->getRegisterRequest()
-            ->except('interest')
-            ->toArray();
-
-        $this->post(route('auth.register'), $registrationRequestData);
-
-        $this->dontSeeJson([
-            'interest' => ['The interest field is required.'],
         ]);
     }
 
@@ -517,11 +462,6 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
-    public function test_register_returns_json_message_indicating_that_gender_must_be_a_male_female_or_undefined()
-    {
-        $this->markTestSkipped();
-    }
-
     public function test_register_returns_json_message_indicating_that_date_of_birt_must_be_a_valid_date()
     {
         $registrationRequestData = $this->getRegisterRequest([
@@ -535,9 +475,70 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
-    public function test_register_returns_json_message_indicating_that_about_me_cannot_exceed_255_characters()
+    public function test_register_returns_json_message_indicating_that_age_range_top_must_be_at_least_18()
     {
-        $this->markTestSkipped();
+        $registrationRequestData = $this->getRegisterRequest([
+            'age_range_top' => 17,
+        ])->toArray();
+
+        $this->post(route('auth.register'), $registrationRequestData);
+
+        $this->seeJson([
+            'age_range_top' => ['The age range top must be at least 18.'],
+        ]);
+    }
+
+    public function test_register_returns_json_message_indicating_that_age_range_bottom_must_be_at_least_18()
+    {
+        $registrationRequestData = $this->getRegisterRequest([
+            'age_range_bottom' => 17,
+        ])->toArray();
+
+        $this->post(route('auth.register'), $registrationRequestData);
+
+        $this->seeJson([
+            'age_range_bottom' => ['The age range bottom must be at least 18.'],
+        ]);
+    }
+
+    public function test_register_returns_json_message_indicating_that_interest_other_than_female_male_or_any_is_not_allowed()
+    {
+        $registrationRequestData = $this->getRegisterRequest([
+            'interest' => 'other than any, femal or male',
+        ])->toArray();
+
+        $this->post(route('auth.register'), $registrationRequestData);
+
+        $this->seeJson([
+            'interest' => ['The selected interest is invalid.'],
+        ]);
+    }
+
+    public function test_register_use_default_preferences_when_not_given() {
+        $defaultPreferences = $this->getDefaultPreferences();
+
+        $registrationRequestData = $this->getRegisterRequest()
+            ->toArray();
+
+        $this->post(route('auth.register'), $registrationRequestData);
+
+        $this->seeInDatabase('users', $defaultPreferences);
+    }
+
+    public function test_register_use_default_preferences_when_given() {
+        $preferences = [
+            'about_me'          => $this->faker->text(20),
+            'interest'          => $this->faker->randomElement(['female','male', 'any']),
+            'age_range_top'     => $this->faker->numberBetween(50,100),
+            'age_range_bottom'  => $this->faker->numberBetween(18,49),
+        ];
+
+        $registrationRequestData = $this->getRegisterRequest($preferences)
+            ->toArray();
+
+        $this->post(route('auth.register'), $registrationRequestData);
+
+        $this->seeInDatabase('users', $preferences);
     }
 
     private function getRegisterRequest(array $data = []): Collection
@@ -548,13 +549,8 @@ class AuthControllerTest extends TestCase
             'first_name' => $this->faker->firstName,
             'middle_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
-            'gender' => $this->faker->randomElement(['male', 'female', 'undefined']),
-            'date_of_birth' => $this->faker->date(),
-            'about_me' => $this->faker->text(),
-            'age_range_bottom' => $this->faker->numberBetween(20, 40),
-            'age_range_top' => $this->faker->numberBetween(30, 60),
-            'max_distance' => $this->faker->numberBetween(),
-            'interest' => $this->faker->text,
+            'gender' => $this->faker->randomElement(['male', 'female']),
+            'date_of_birth' => $this->faker->dateTime(),
         ])->merge($data);
     }
 
@@ -569,5 +565,15 @@ class AuthControllerTest extends TestCase
             'email' => $this->faker->email,
             'password' => $this->faker->password(8),
         ])->merge($data);
+    }
+
+    private function getDefaultPreferences(): array
+    {
+        return [
+            'about_me'          => 'I 💕 Matcher!',
+            'interest'          => 'any',
+            'age_range_top'     => 100,
+            'age_range_bottom'  => 100,
+        ];
     }
 }

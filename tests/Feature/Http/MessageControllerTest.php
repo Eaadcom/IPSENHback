@@ -4,6 +4,7 @@ namespace Tests\Feature\Http;
 
 use App\Models\Like;
 use App\Models\Message;
+use App\Models\User;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -66,6 +67,22 @@ class MessageControllerTest extends TestCase
     public function test_api_post_message_returns_json_when_not_authenticated()
     {
         $this->postAsNotAuthenticated()->seeJsonEquals([
+            'message' => 'Unauthorized'
+        ]);
+    }
+
+    public function test_api_post_message_returns_unauthorized_for_user_not_in_match() {
+
+        $user = User::factory()->create();
+        $like = Like::factory() ->hasUser(User::factory())->create();
+        $message = Message::factory()->make();
+        $message->sender()->associate($user);
+
+        $this->actingAs($this->message->sender)->post(
+            route('message.post', ['id' => $like->likeMatch->id]),
+            $this->message->toArray());
+
+        $this->seeJson([
             'message' => 'Unauthorized'
         ]);
     }
