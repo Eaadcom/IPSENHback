@@ -71,14 +71,18 @@ class UserService
         // , whether they have been liked yet or not and
         // wherether the user has a codesnippet created,
         // it does not factor in the exact birthdate within the year
-        return User::select('id')
+        $query = User::select('id')
             ->where('id', '!=', $id)
             ->whereNotIn('id', $likedUsers)
             ->whereNotIn('id', $likedBackUsers)
             ->whereIn('id', $usersWithCodesnippets)
-            ->where('gender', '=', $user['interest'])
             ->whereYear('date_of_birth', '<', $maxAge)
-            ->whereYear('date_of_birth', '>', $minAge)
-            ->get()->keyBy('id')->forget($id)->keys()->all();
+            ->whereYear('date_of_birth', '>', $minAge);
+
+        if($user['interest'] != 'any') {
+            $query = $query->where('gender', '=', $user['interest']);
+        }
+
+        return $query->get()->keyBy('id')->forget($id)->keys()->all();
     }
 }
