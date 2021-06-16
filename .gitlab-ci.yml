@@ -1,4 +1,3 @@
-image: composer
 stages:
   - testing
   - sonarqube
@@ -7,43 +6,46 @@ stages:
   - deploying
 
 test:phpunit:
- stage: testing
- script:
-   - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
-   - php ./vendor/bin/phpunit --configuration phpunit.xml --coverage-text --whitelist src --colors=never
- artifacts:
-   paths:
-     - ./storage/logs # for debugging
-     - ./reports
-   expire_in: 1 hrs
-   when: always
+  image: mrodler/php-composer-xdebug:7.4.12-fpm-alpine
+  stage: testing
+  script:
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
+    - php ./vendor/bin/phpunit --configuration phpunit.xml
+  artifacts:
+    paths:
+      - ./storage/logs
+      - ./reports
+    expire_in: 1 hrs
+    when: always
 
 test:behat:
- stage: testing
- script:
-   - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
-   - php ./vendor/bin/behat
+  image: composer
+  stage: testing
+  script:
+    - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
+    - php ./vendor/bin/behat
 
 sonarqube-check:
- stage: sonarqube
- image:
-   name: sonarsource/sonar-scanner-cli:latest
-   entrypoint: [""]
- variables:
-   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
-   GIT_DEPTH: "0"
- cache:
-   key: "${CI_JOB_NAME}"
-   paths:
-     - .sonar/cache
- script:
-   - sonar-scanner
- allow_failure: true
- only:
+  stage: sonarqube
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    GIT_DEPTH: "0"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+  allow_failure: true
+  only:
    - development
    - master
 
 archive:app:
+  image: composer
   stage: archiving
   script:
     - composer install --prefer-dist --no-interaction --no-progress --no-scripts --ignore-platform-reqs
