@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\guard\JwtGuard;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
@@ -52,7 +51,6 @@ class AuthController extends Controller
     public function refresh(): JsonResponse
     {
         return $this->respondWithToken(
-        /** @var JwtGuard auth() */
             auth()->refresh()
         );
     }
@@ -71,7 +69,6 @@ class AuthController extends Controller
             new User,
             $request->validated()
         );
-
         $token = auth()->login($user);
 
         return response()->json(['token' => $token]);

@@ -2,11 +2,22 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Validation\Rule;
+use App\Models\Like;
 use Pearl\RequestValidate\RequestAbstract;
 
 class StoreMessageRequest extends RequestAbstract
 {
+
+    protected function authorize(): bool
+    {
+        return isset(request()->id) && $this->userIsInLikeMatch();
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->request->add(['like_match_id' => request()->id]);
+    }
+
     /**
      * Validates the post request for creating a message.
      * Includes validation of existing attributes, exists in database, auth user exists in the like
@@ -14,18 +25,17 @@ class StoreMessageRequest extends RequestAbstract
      */
     public function rules(): array
     {
-        $request = request();
 
         return [
             'content' => 'required',
-
             'like_match_id' => 'required|exists:like_matches,id',
-
-            Rule::exists('likes')->where(function ($query) use ($request) {
-                    return $query->where(function ($query) {
-                        return $query->where('user_id', auth()->id())->orWhere('user_id_of_liked_user', auth()->id());
-                    })->where('like_match_id', $request->get('like_match_id'));
-            })
         ];
+    }
+
+    private function userIsInLikeMatch(): bool
+    {
+        return Like::query()->where(function ($query) {
+            $query->where('user_id', auth()->id())->orWhere('user_id_of_liked_user', auth()->id());
+        })->where('like_match_id', request()->id)->exists();
     }
 }
