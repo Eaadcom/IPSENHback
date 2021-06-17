@@ -3,8 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -52,6 +52,10 @@ class Handler extends ExceptionHandler
     {
         if($exception instanceof ModelNotFoundException) {
             return response()->json(['message' => 'Not found'], 404);
+        }
+
+        if($exception instanceof UnauthorizedException) {
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
         return parent::render($request, $exception);
     }

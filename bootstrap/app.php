@@ -96,9 +96,7 @@ $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(Fruitcake\Cors\CorsServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
-$app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Illuminate\Broadcasting\BroadcastServiceProvider::class);
-$app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Pearl\RequestValidate\RequestServiceProvider::class);
 
